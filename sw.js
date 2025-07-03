@@ -3,7 +3,8 @@ const urlsToCache = [
   '/Boiler_Calculator_PWA/',
   '/Boiler_Calculator_PWA/index.html',
   '/Boiler_Calculator_PWA/manifest.json',
-  '/Boiler_Calculator_PWA/icon.svg'
+  '/Boiler_Calculator_PWA/icon.svg',
+  '/Boiler_Calculator_PWA/icon.png'
 ];
 
 // Install event - cache resources

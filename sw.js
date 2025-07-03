@@ -1,8 +1,9 @@
 const CACHE_NAME = 'calcolatrice-pwa-v1';
 const urlsToCache = [
-  '/pwa_prova/',
-  '/pwa_prova/index.html',
-  '/pwa_prova/manifest.json'
+  '/Boiler_Calculator_PWA/',
+  '/Boiler_Calculator_PWA/index.html',
+  '/Boiler_Calculator_PWA/manifest.json',
+  '/Boiler_Calculator_PWA/icon.svg'
 ];
 
 // Install event - cache resources

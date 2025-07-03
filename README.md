@@ -57,8 +57,8 @@ Carica i parametri precedentemente salvati
 
 1. Clona il repository:
    ```bash
-   git clone https://github.com/stramazzo/pwa_prova.git
-   cd pwa_prova
+   git clone https://github.com/stramazzo/Boiler_Calculator_PWA.git
+   cd Boiler_Calculator_PWA
    ```
 
 2. Apri `index.html` nel browser o avvia un server locale:
@@ -109,10 +109,11 @@ Perdita = Energia_Perduta / Capacità_Termica_Totale
 ## 📊 Struttura del Progetto
 
 ```
-pwa_prova/
+Boiler_Calculator_PWA/
 ├── index.html              # Boiler Calculator PWA principale
 ├── manifest.json           # Configurazione PWA
 ├── sw.js                  # Service Worker
+├── icon.svg               # Icona PWA (boiler calculator)
 ├── boiler_calculator.py    # File di riferimento Python
 ├── calculator_config.ini   # Configurazione parametri default
 └── README.md              # Documentazione

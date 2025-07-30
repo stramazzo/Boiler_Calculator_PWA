@@ -1054,7 +1054,7 @@
         
         <div class="input-group" id="temp_input_group">
             <label for="tp_temperature">Temperature (°C)</label>
-            <input type="number" id="tp_temperature" placeholder="Enter temperature (0-200°C)" step="0.1" min="0" max="200">
+                            <input type="number" id="tp_temperature" placeholder="Enter temperature (-10-200°C)" step="0.1" min="-10" max="200">
         </div>
         
         <div class="input-group" id="resistance_input_group" style="display: none;">
@@ -1904,8 +1904,8 @@
                         return;
                     }
                     
-                    if (temperature < 0 || temperature > 200) {
-                        resultInfo.textContent = 'Temperature must be between 0°C and 200°C';
+                    if (temperature < -10 || temperature > 200) {
+                        resultInfo.textContent = 'Temperature must be between -10°C and 200°C';
                         resultDiv.style.display = 'block';
                         return;
                     }
@@ -1947,8 +1947,8 @@
                         return;
                     }
                     
-                    if (temperature < 0 || temperature > 200) {
-                        resultInfo.textContent = `Calculated temperature (${temperature.toFixed(1)}°C) is outside the valid range (0-200°C)`;
+                    if (temperature < -10 || temperature > 200) {
+                        resultInfo.textContent = `Calculated temperature (${temperature.toFixed(1)}°C) is outside the valid range (-10-200°C)`;
                         resultDiv.style.display = 'block';
                         return;
                     }

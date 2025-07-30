@@ -1,7 +1,7 @@
 // Temperature Probe Data - Resistance values for different probe types
 // Temperature range: -10°C to 200°C with 1°C steps
 
-const TEMP_PROBE_DATA = {
+window.TEMP_PROBE_DATA = {
     // NTC 3.3k ohm at 25°C (using Steinhart-Hart equation approximation)
     'ntc3k3': {
         -10: 13250,   -9: 12890,   -8: 12540,   -7: 12200,   -6: 11870,   -5: 11550,
@@ -164,7 +164,7 @@ const TEMP_PROBE_DATA = {
 };
 
 // Function to interpolate between known values
-function interpolateValue(data, targetValue, searchByTemp = true) {
+window.interpolateValue = function(data, targetValue, searchByTemp = true) {
     const entries = Object.entries(data).map(([key, value]) => [parseFloat(key), value]);
     entries.sort((a, b) => a[0] - b[0]);
     
@@ -196,48 +196,63 @@ function interpolateValue(data, targetValue, searchByTemp = true) {
         // Find temperature for given resistance
         const resistance = targetValue;
         
-        // Find closest resistances for interpolation
+        // Find the two closest resistance values for interpolation
         let lower = null, upper = null;
-        for (const [temp, res] of entries) {
-            if (res >= resistance) {
-                if (lower === null || res < lower[1]) {
-                    upper = lower;
-                    lower = [temp, res];
-                } else if (upper === null || res < upper[1]) {
-                    upper = [temp, res];
-                }
+        
+        // Sort entries by resistance value
+        const sortedEntries = entries.sort((a, b) => a[1] - b[1]);
+        
+        // Find the closest resistance values
+        for (let i = 0; i < sortedEntries.length; i++) {
+            const [temp, res] = sortedEntries[i];
+            
+            if (res <= resistance) {
+                lower = [temp, res];
             } else {
-                if (upper === null || res > upper[1]) {
-                    lower = upper;
-                    upper = [temp, res];
-                } else if (lower === null || res > lower[1]) {
-                    lower = [temp, res];
-                }
+                upper = [temp, res];
+                break;
             }
         }
         
-        // For NTC thermistors, resistance decreases with temperature
-        // For PT sensors, resistance increases with temperature
-        const isNTC = Object.keys(data)[0] !== undefined && data[0] > data[25];
-        
-        if (isNTC) {
-            // Swap if needed for NTC
-            if (lower && upper && lower[1] < upper[1]) {
-                [lower, upper] = [upper, lower];
-            }
+        // If we didn't find an upper bound, use the last entry
+        if (!upper && sortedEntries.length > 0) {
+            upper = sortedEntries[sortedEntries.length - 1];
         }
         
+        // If we didn't find a lower bound, use the first entry
+        if (!lower && sortedEntries.length > 0) {
+            lower = sortedEntries[0];
+        }
+        
+        // If we have both bounds, interpolate
         if (lower && upper && lower[1] !== upper[1]) {
-            const ratio = (resistance - upper[1]) / (lower[1] - upper[1]);
-            return upper[0] + ratio * (lower[0] - upper[0]);
+            const ratio = (resistance - lower[1]) / (upper[1] - lower[1]);
+            return lower[0] + ratio * (upper[0] - lower[0]);
         }
         
+        // If we only have one bound, return that temperature
         return lower ? lower[0] : (upper ? upper[0] : null);
     }
 }
 
-// Export for use in the calculator
-if (typeof window !== 'undefined') {
-    window.TEMP_PROBE_DATA = TEMP_PROBE_DATA;
-    window.interpolateValue = interpolateValue;
-}
+// Add a test function for debugging
+window.testTempProbeData = function() {
+    console.log('Testing temperature probe data...');
+    console.log('Available probe types:', Object.keys(window.TEMP_PROBE_DATA));
+    
+    // Test temperature to resistance
+    const testTemp = 25;
+    const testResistance = window.interpolateValue(window.TEMP_PROBE_DATA.ntc3k3, testTemp, true);
+    console.log(`NTC 3.3k at ${testTemp}°C: ${testResistance}Ω`);
+    
+    // Test resistance to temperature
+    const testRes = 6070; // Should be around 25°C for NTC 3.3k
+    const testTempResult = window.interpolateValue(window.TEMP_PROBE_DATA.ntc3k3, testRes, false);
+    console.log(`NTC 3.3k with ${testRes}Ω: ${testTempResult}°C`);
+    
+    return 'Test completed - check console for results';
+};
+
+console.log('Temperature probe data loaded successfully');
+console.log('window.TEMP_PROBE_DATA:', window.TEMP_PROBE_DATA);
+console.log('window.interpolateValue:', window.interpolateValue);

@@ -1044,7 +1044,7 @@
         
         <div class="input-group">
             <label for="tp_probe_type">Probe Type</label>
-            <select id="tp_probe_type">
+            <select id="tp_probe_type" onchange="onProbeTypeChange()">
                 <option value="ntc3k3">NTC 3.3kΩ @ 25°C</option>
                 <option value="ntc47k">NTC 47kΩ @ 25°C</option>
                 <option value="pt1000">PT1000 (1000Ω @ 0°C)</option>
@@ -1052,9 +1052,16 @@
             </select>
         </div>
         
+        <div class="input-group" id="tp_limits" style="display: none;">
+            <label>Valid Range</label>
+            <div style="background: #e8f4fd; padding: 8px; border-radius: 4px; border-left: 4px solid #2196F3; font-size: 14px; color: #1976D2;">
+                <span id="tp_limits_text">Select probe type to see valid range</span>
+            </div>
+        </div>
+        
         <div class="input-group" id="temp_input_group">
             <label for="tp_temperature">Temperature (°C)</label>
-                            <input type="number" id="tp_temperature" placeholder="Enter temperature (-10-200°C)" step="0.1" min="-10" max="200">
+                            <input type="number" id="tp_temperature" placeholder="Enter temperature value" step="0.1">
         </div>
         
         <div class="input-group" id="resistance_input_group" style="display: none;">
@@ -1062,27 +1069,43 @@
             <input type="number" id="tp_resistance" placeholder="Enter resistance value" step="0.01" min="0">
         </div>
         
-        <button class="calculate-btn" onclick="calculateTempProbe()">Calculate</button>
+        <button class="calculate-btn" onclick="calculateTempProbe();">Calculate</button>
         
-        <div class="result-box" id="tempprobe-result" style="display: none;">
+        <div class="result-box" id="tempprobe-result" style="display: none; margin-top: 20px; margin-bottom: 30px;">
             <h3>Result</h3>
             <div class="result-item">
                 <span class="result-label" id="tp_result_label">Resistance:</span>
                 <span class="result-value" id="tp_result_value">-</span>
                 <span class="result-unit" id="tp_result_unit">Ω</span>
             </div>
+            
+            <!-- Result Information -->
             <div class="result-info">
                 <p id="tp_result_info">Enter values above to calculate</p>
             </div>
         </div>
         
-        <div class="reset-container">
-            <button class="reset-btn" onclick="resetTempProbe()">Reset</button>
-        </div>
+                        <div class="reset-container">
+                    <button class="reset-btn" onclick="resetTempProbe()">Reset</button>
+                </div>
     </div>
 
-    <script src="temp_probe_data.js"></script>
-    <script>
+    <!-- Load individual probe data files -->
+    <script src="ntc3k3.js"></script>
+    <script src="ntc47k.js"></script>
+    <script src="pt1000.js"></script>
+    <script src="pt100.js"></script>
+    <!-- Load main data handler -->
+    <script src="temp_probe_data_new.js"></script>
+        <script>
+        // Initialize limits display on page load
+        const inputType = document.getElementById('tp_input_type').value;
+        const probeType = document.getElementById('tp_probe_type').value;
+        const probeInfo = window.getProbeData(probeType);
+        updateLimitsDisplay(probeInfo, inputType);
+        </script>
+        
+        <script>
         // Unit conversion functions
         function convertSurfaceArea(prefix) {
             const input = document.getElementById(prefix + '_surface_area');
@@ -1852,6 +1875,7 @@
         // Temperature Probe Calculator Functions
         function toggleInputFields() {
             const inputType = document.getElementById('tp_input_type').value;
+            const probeType = document.getElementById('tp_probe_type').value;
             const tempGroup = document.getElementById('temp_input_group');
             const resistanceGroup = document.getElementById('resistance_input_group');
             
@@ -1867,28 +1891,44 @@
                 document.getElementById('tp_resistance').value = '';
             }
             
+            // Update limits display when switching input types
+            const probeInfo = window.getProbeData(probeType);
+            updateLimitsDisplay(probeInfo, inputType);
+            
             // Hide result when switching input types
             document.getElementById('tempprobe-result').style.display = 'none';
         }
 
         function calculateTempProbe() {
-            const inputType = document.getElementById('tp_input_type').value;
-            const probeType = document.getElementById('tp_probe_type').value;
+            // Check if required elements exist
+            const inputTypeElement = document.getElementById('tp_input_type');
+            const probeTypeElement = document.getElementById('tp_probe_type');
             const resultDiv = document.getElementById('tempprobe-result');
             const resultLabel = document.getElementById('tp_result_label');
             const resultValue = document.getElementById('tp_result_value');
             const resultUnit = document.getElementById('tp_result_unit');
             const resultInfo = document.getElementById('tp_result_info');
             
-            if (!window.TEMP_PROBE_DATA || !window.interpolateValue) {
-                resultInfo.textContent = 'Error: Temperature probe data not loaded';
-                resultDiv.style.display = 'block';
+            // Check if all required elements exist
+            if (!inputTypeElement || !probeTypeElement || !resultDiv || !resultLabel || !resultValue || !resultUnit || !resultInfo) {
+                console.error('ERROR: Required DOM elements not found');
                 return;
             }
             
-            const probeData = window.TEMP_PROBE_DATA[probeType];
-            if (!probeData) {
-                resultInfo.textContent = 'Error: Invalid probe type selected';
+            const inputType = inputTypeElement.value;
+            const probeType = probeTypeElement.value;
+            
+            // Get probe data and limits using new system
+            const probeInfo = window.getProbeData(probeType);
+            
+            // Update limits display based on input type
+            updateLimitsDisplay(probeInfo, inputType);
+            
+            if (!probeInfo || !window.interpolateValue) {
+                resultLabel.textContent = 'Error:';
+                resultValue.textContent = '';
+                resultUnit.textContent = '';
+                resultInfo.textContent = 'Temperature probe data not loaded';
                 resultDiv.style.display = 'block';
                 return;
             }
@@ -1899,64 +1939,105 @@
                     const temperature = parseFloat(document.getElementById('tp_temperature').value);
                     
                     if (isNaN(temperature)) {
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
                         resultInfo.textContent = 'Please enter a valid temperature value';
                         resultDiv.style.display = 'block';
                         return;
                     }
                     
-                    if (temperature < -10 || temperature > 200) {
-                        resultInfo.textContent = 'Temperature must be between -10°C and 200°C';
+                    const result = window.interpolateValue(
+                        probeInfo.temperatures,
+                        probeInfo.resistances,
+                        temperature, 
+                        true, 
+                        probeInfo.minTemp, 
+                        probeInfo.maxTemp, 
+                        probeInfo.minResistance, 
+                        probeInfo.maxResistance
+                    );
+                    
+                    if (typeof result === 'object' && result.error) {
+                        // Range error
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
+                        resultInfo.textContent = result.message;
                         resultDiv.style.display = 'block';
                         return;
                     }
                     
-                    const resistance = window.interpolateValue(probeData, temperature, true);
-                    
-                    if (resistance === null) {
+                    if (result === null) {
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
                         resultInfo.textContent = 'Unable to calculate resistance for this temperature';
                         resultDiv.style.display = 'block';
                         return;
                     }
                     
                     resultLabel.textContent = 'Resistance:';
-                    resultValue.textContent = resistance.toFixed(2);
+                    resultValue.textContent = result.toFixed(2);
                     resultUnit.textContent = 'Ω';
-                    resultInfo.textContent = `At ${temperature}°C, the ${getProbeDescription(probeType)} has a resistance of ${resistance.toFixed(2)}Ω`;
+                    resultInfo.textContent = `At ${temperature}°C, the ${getProbeDescription(probeType)} has a resistance of ${result.toFixed(2)}Ω`;
                     
                 } else {
                     // Resistance to Temperature
                     const resistance = parseFloat(document.getElementById('tp_resistance').value);
                     
                     if (isNaN(resistance)) {
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
                         resultInfo.textContent = 'Please enter a valid resistance value';
                         resultDiv.style.display = 'block';
                         return;
                     }
                     
                     if (resistance <= 0) {
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
                         resultInfo.textContent = 'Resistance must be greater than 0';
                         resultDiv.style.display = 'block';
                         return;
                     }
                     
-                    const temperature = window.interpolateValue(probeData, resistance, false);
+                    const result = window.interpolateValue(
+                        probeInfo.temperatures,
+                        probeInfo.resistances,
+                        resistance, 
+                        false, 
+                        probeInfo.minTemp, 
+                        probeInfo.maxTemp, 
+                        probeInfo.minResistance, 
+                        probeInfo.maxResistance
+                    );
                     
-                    if (temperature === null) {
+                    if (typeof result === 'object' && result.error) {
+                        // Range error
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
+                        resultInfo.textContent = result.message;
+                        resultDiv.style.display = 'block';
+                        return;
+                    }
+                    
+                    if (result === null) {
+                        resultLabel.textContent = 'Error:';
+                        resultValue.textContent = '';
+                        resultUnit.textContent = '';
                         resultInfo.textContent = 'Unable to calculate temperature for this resistance value';
                         resultDiv.style.display = 'block';
                         return;
                     }
                     
-                    if (temperature < -10 || temperature > 200) {
-                        resultInfo.textContent = `Calculated temperature (${temperature.toFixed(1)}°C) is outside the valid range (-10-200°C)`;
-                        resultDiv.style.display = 'block';
-                        return;
-                    }
-                    
                     resultLabel.textContent = 'Temperature:';
-                    resultValue.textContent = temperature.toFixed(1);
+                    resultValue.textContent = result.toFixed(1);
                     resultUnit.textContent = '°C';
-                    resultInfo.textContent = `With a resistance of ${resistance}Ω, the ${getProbeDescription(probeType)} indicates ${temperature.toFixed(1)}°C`;
+                    resultInfo.textContent = `With a resistance of ${resistance}Ω, the ${getProbeDescription(probeType)} indicates ${result.toFixed(1)}°C`;
                 }
                 
                 resultDiv.style.display = 'block';
@@ -1976,6 +2057,62 @@
             };
             return descriptions[probeType] || 'probe';
         }
+        
+        // Function to update limits display
+        function updateLimitsDisplay(probeInfo, inputType) {
+            if (!probeInfo) return;
+            
+            const limitsDiv = document.getElementById('tp_limits');
+            const limitsText = document.getElementById('tp_limits_text');
+            if (!limitsDiv || !limitsText) return;
+            
+            if (inputType === 'temperature') {
+                // Find resistance values for min and max temperatures
+                const minResistance = probeInfo.resistances[0]; // First element (min temp)
+                const maxResistance = probeInfo.resistances[probeInfo.resistances.length - 1]; // Last element (max temp)
+                limitsText.textContent = `Temperature range: ${probeInfo.minTemp}°C (${formatResistance(minResistance)}) to ${probeInfo.maxTemp}°C (${formatResistance(maxResistance)})`;
+            } else {
+                // For resistance mode, we need to find the actual min/max resistance values and their corresponding temperatures
+                let minResistance = probeInfo.resistances[0];
+                let maxResistance = probeInfo.resistances[0];
+                let minResistanceTemp = probeInfo.temperatures[0];
+                let maxResistanceTemp = probeInfo.temperatures[0];
+                
+                for (let i = 1; i < probeInfo.resistances.length; i++) {
+                    if (probeInfo.resistances[i] < minResistance) {
+                        minResistance = probeInfo.resistances[i];
+                        minResistanceTemp = probeInfo.temperatures[i];
+                    }
+                    if (probeInfo.resistances[i] > maxResistance) {
+                        maxResistance = probeInfo.resistances[i];
+                        maxResistanceTemp = probeInfo.temperatures[i];
+                    }
+                }
+                
+                limitsText.textContent = `Resistance range: ${formatResistance(minResistance)} (${minResistanceTemp}°C) to ${formatResistance(maxResistance)} (${maxResistanceTemp}°C)`;
+            }
+            limitsDiv.style.display = 'block';
+        }
+        
+        // Helper function to format resistance values
+        function formatResistance(resistance) {
+            if (resistance >= 1000) {
+                return (resistance / 1000).toFixed(1) + 'kΩ';
+            } else {
+                return resistance.toFixed(1) + 'Ω';
+            }
+        }
+        
+        // Function to handle probe type changes
+        function onProbeTypeChange() {
+            const inputType = document.getElementById('tp_input_type').value;
+            const probeType = document.getElementById('tp_probe_type').value;
+            const probeInfo = window.getProbeData(probeType);
+            updateLimitsDisplay(probeInfo, inputType);
+            
+            // Hide result when switching probe types
+            document.getElementById('tempprobe-result').style.display = 'none';
+        }
 
         function resetTempProbe() {
             document.getElementById('tp_input_type').value = 'temperature';
@@ -1983,8 +2120,11 @@
             document.getElementById('tp_temperature').value = '';
             document.getElementById('tp_resistance').value = '';
             document.getElementById('tempprobe-result').style.display = 'none';
+            document.getElementById('tp_limits').style.display = 'none';
             toggleInputFields();
         }
+        
+
     </script>
 </body>
 </html> 

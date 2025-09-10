@@ -137,15 +137,6 @@ window.getProbeData = function(probeType) {
                 minResistance: window.NTC3K3_MIN_RESISTANCE,
                 maxResistance: window.NTC3K3_MAX_RESISTANCE
             };
-        case 'ntc47k':
-            return {
-                temperatures: window.NTC47K_TEMPERATURES,
-                resistances: window.NTC47K_RESISTANCES,
-                minTemp: window.NTC47K_MIN_TEMP,
-                maxTemp: window.NTC47K_MAX_TEMP,
-                minResistance: window.NTC47K_MIN_RESISTANCE,
-                maxResistance: window.NTC47K_MAX_RESISTANCE
-            };
         case 'pt1000':
             return {
                 temperatures: window.PT1000_TEMPERATURES,
@@ -154,15 +145,6 @@ window.getProbeData = function(probeType) {
                 maxTemp: window.PT1000_MAX_TEMP,
                 minResistance: window.PT1000_MIN_RESISTANCE,
                 maxResistance: window.PT1000_MAX_RESISTANCE
-            };
-        case 'pt100':
-            return {
-                temperatures: window.PT100_TEMPERATURES,
-                resistances: window.PT100_RESISTANCES,
-                minTemp: window.PT100_MIN_TEMP,
-                maxTemp: window.PT100_MAX_TEMP,
-                minResistance: window.PT100_MIN_RESISTANCE,
-                maxResistance: window.PT100_MAX_RESISTANCE
             };
         default:
             return null;
@@ -174,7 +156,7 @@ window.testTempProbeData = function() {
     console.log('Testing temperature probe data...');
     
     // Test each probe type
-    const probeTypes = ['ntc3k3', 'ntc47k', 'pt1000', 'pt100'];
+    const probeTypes = ['ntc3k3', 'pt1000'];
     
     for (const probeType of probeTypes) {
         const probeData = window.getProbeData(probeType);

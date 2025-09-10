@@ -1046,9 +1046,7 @@
             <label for="tp_probe_type">Probe Type</label>
             <select id="tp_probe_type" onchange="onProbeTypeChange()">
                 <option value="ntc3k3">NTC 3.3kΩ @ 25°C</option>
-                <option value="ntc47k">NTC 47kΩ @ 25°C</option>
                 <option value="pt1000">PT1000 (1000Ω @ 0°C)</option>
-                <option value="pt100">PT100 (100Ω @ 0°C)</option>
             </select>
         </div>
         
@@ -1092,9 +1090,7 @@
 
     <!-- Load individual probe data files -->
     <script src="ntc3k3.js"></script>
-    <script src="ntc47k.js"></script>
     <script src="pt1000.js"></script>
-    <script src="pt100.js"></script>
     <!-- Load main data handler -->
     <script src="temp_probe_data_new.js"></script>
         <script>
@@ -2051,9 +2047,7 @@
         function getProbeDescription(probeType) {
             const descriptions = {
                 'ntc3k3': 'NTC 3.3kΩ probe',
-                'ntc47k': 'NTC 47kΩ probe', 
-                'pt1000': 'PT1000 probe',
-                'pt100': 'PT100 probe'
+                'pt1000': 'PT1000 probe'
             };
             return descriptions[probeType] || 'probe';
         }

@@ -1045,7 +1045,7 @@
         <div class="input-group">
             <label for="tp_probe_type">Probe Type</label>
             <select id="tp_probe_type" onchange="onProbeTypeChange()">
-                <option value="ntc3k3">NTC 3.3kΩ @ 25°C</option>
+                <option value="ntc3k3">NTC 3.3kΩ @ 100°C</option>
                 <option value="pt1000">PT1000 (1000Ω @ 0°C)</option>
             </select>
         </div>
@@ -2046,7 +2046,7 @@
 
         function getProbeDescription(probeType) {
             const descriptions = {
-                'ntc3k3': 'NTC 3.3kΩ probe',
+                'ntc3k3': 'NTC 3.3kΩ @ 100°C probe',
                 'pt1000': 'PT1000 probe'
             };
             return descriptions[probeType] || 'probe';

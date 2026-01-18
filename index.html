@@ -208,6 +208,29 @@
         .input-group input:focus {
             outline: none;
             border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .input-group input[aria-invalid="true"] {
+            border-color: #e74c3c;
+            border-width: 2px;
+        }
+        
+        .input-group input[aria-invalid="true"]:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         .input-with-unit {
@@ -476,7 +499,97 @@
             grid-column: span 2;
         }
 
+        /* Temperature Probe Calculator Styles */
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
 
+        .result-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        .result-label {
+            font-weight: bold;
+            color: #495057;
+            font-size: 1rem;
+        }
+
+        .result-value {
+            background: #2c3e50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .result-unit {
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .result-info {
+            margin-top: 15px;
+            padding: 12px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .result-info p {
+            color: #1976D2;
+            font-size: 0.9rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .reset-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(253, 121, 168, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(253, 121, 168, 0.4);
+            background: linear-gradient(135deg, #e84393 0%, #f39c12 100%);
+        }
 
         @supports (-webkit-touch-callout: none) {
             body {
@@ -531,11 +644,178 @@
                 padding-bottom: env(safe-area-inset-bottom);
             }
         }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .container {
+            background: #2c3e50;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.dark-mode .header h1 {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .header p {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .calculator,
+        body.dark-mode .simple-calculator {
+            background: rgba(44, 62, 80, 0.95);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        body.dark-mode .input-group label {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .input-group input,
+        body.dark-mode .input-group select {
+            background: #34495e;
+            color: #ffffff;
+            border-color: #4a5568;
+        }
+        
+        body.dark-mode .input-group input:focus,
+        body.dark-mode .input-group select:focus {
+            border-color: #3498db;
+            background: #3d5468;
+        }
+        
+        body.dark-mode .input-group input[aria-invalid="true"] {
+            border-color: #e74c3c;
+        }
+        
+        body.dark-mode .results-section {
+            background: #34495e;
+            border-color: #4a5568;
+        }
+        
+        body.dark-mode .results-section h3 {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .result-group label {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .result-value {
+            background: #1a252f;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .result-box {
+            background: #34495e;
+            border-color: #4a5568;
+        }
+        
+        body.dark-mode .result-box h3 {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .result-item {
+            background: #2c3e50;
+            border-color: #4a5568;
+        }
+        
+        body.dark-mode .result-info {
+            background: #2c3e50;
+            border-left-color: #3498db;
+        }
+        
+        body.dark-mode .result-info p {
+            color: #b0d4f1;
+        }
+        
+        body.dark-mode .calculator-title {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .calculator-header {
+            border-bottom-color: #4a5568;
+        }
+        
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .dark-mode-toggle:active {
+            transform: scale(0.95);
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        /* Export Button */
+        .export-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 184, 148, 0.3);
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+            background: linear-gradient(135deg, #00a085 0%, #00b894 100%);
+        }
+        
+        body.dark-mode .export-btn {
+            background: linear-gradient(135deg, #00a085 0%, #00b894 100%);
+        }
+        
+        body.dark-mode .export-btn:hover {
+            background: linear-gradient(135deg, #008b75 0%, #00a085 100%);
+        }
     </style>
 </head>
 <body>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Attiva/disattiva modalità scura" title="Dark Mode">
+        <span id="dark-mode-icon">🌙</span>
+    </button>
+    
     <!-- Main Menu -->
-    <div class="container" id="main-menu">
+    <div class="container" id="main-menu" role="main">
         <div class="header">
             <h1>
                 <svg class="app-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -608,32 +888,32 @@
         </div>
         
         <div class="menu-grid">
-            <div class="menu-item" onclick="showCalculator('heating')">
+            <div class="menu-item" onclick="showCalculator('heating')" role="button" tabindex="0" aria-label="Apri calcolatore tempo di riscaldamento" onkeypress="if(event.key==='Enter') showCalculator('heating')">
                 <h3>🔥 Heating Time Calculator</h3>
                 <p>Calcola il tempo necessario per riscaldare l'acqua</p>
             </div>
             
-            <div class="menu-item" onclick="showCalculator('power')">
+            <div class="menu-item" onclick="showCalculator('power')" role="button" tabindex="0" aria-label="Apri calcolatore potenza" onkeypress="if(event.key==='Enter') showCalculator('power')">
                 <h3>⚡ Power Calculator</h3>
                 <p>Calcola la potenza necessaria per il riscaldamento</p>
             </div>
             
-            <div class="menu-item" onclick="showCalculator('cooling')">
+            <div class="menu-item" onclick="showCalculator('cooling')" role="button" tabindex="0" aria-label="Apri calcolatore tempo di raffreddamento" onkeypress="if(event.key==='Enter') showCalculator('cooling')">
                 <h3>❄️ Cooling Time Calculator</h3>
                 <p>Calcola il tempo di raffreddamento</p>
             </div>
             
-            <div class="menu-item" onclick="showCalculator('brewing')">
+            <div class="menu-item" onclick="showCalculator('brewing')" role="button" tabindex="0" aria-label="Apri calcolatore perdite preparazione" onkeypress="if(event.key==='Enter') showCalculator('brewing')">
                 <h3>☕ Brewing Loss Calculator</h3>
                 <p>Calcola le perdite durante la preparazione</p>
             </div>
             
-            <div class="menu-item" onclick="showCalculator('simple')">
+            <div class="menu-item" onclick="showCalculator('simple')" role="button" tabindex="0" aria-label="Apri calcolatrice semplice" onkeypress="if(event.key==='Enter') showCalculator('simple')">
                 <h3>🔢 Simple Calculator</h3>
                 <p>Calcolatrice standard per operazioni base</p>
             </div>
             
-            <div class="menu-item" onclick="showCalculator('tempprobe')">
+            <div class="menu-item" onclick="showCalculator('tempprobe')" role="button" tabindex="0" aria-label="Apri calcolatore sonde temperatura" onkeypress="if(event.key==='Enter') showCalculator('tempprobe')">
                 <h3>🌡️ Temp Probe Calculator</h3>
                 <p>Calcola temperatura/resistenza per sonde NTC e PT</p>
             </div>
@@ -641,90 +921,138 @@
     </div>
 
     <!-- Heating Time Calculator -->
-    <div class="calculator" id="heating-calculator">
+    <div class="calculator" id="heating-calculator" role="main" aria-label="Calcolatore tempo di riscaldamento">
         <div class="calculator-header">
             <div class="calculator-title">🔥 Heating Time Calculator</div>
-            <button class="back-btn" onclick="showMenu()">← Menu</button>
+            <button class="back-btn" onclick="showMenu()" aria-label="Torna al menu principale">← Menu</button>
         </div>
         
         <div class="input-group">
             <label for="ht_initial_temp">Initial Temperature (°C)</label>
-            <input type="number" id="ht_initial_temp" value="50.0" step="0.1">
+            <input type="number" id="ht_initial_temp" value="50.0" step="0.1" 
+                   aria-label="Temperatura iniziale in gradi Celsius"
+                   aria-describedby="ht_initial_temp_desc"
+                   aria-required="true"
+                   min="-273" max="1000">
+            <span id="ht_initial_temp_desc" class="sr-only">Inserisci la temperatura iniziale dell'acqua, tra -273°C e 1000°C</span>
         </div>
         
         <div class="input-group">
             <label for="ht_target_temp">Target Temperature (°C)</label>
-            <input type="number" id="ht_target_temp" value="70.0" step="0.1">
+            <input type="number" id="ht_target_temp" value="70.0" step="0.1"
+                   aria-label="Temperatura target in gradi Celsius"
+                   aria-describedby="ht_target_temp_desc"
+                   aria-required="true"
+                   min="-273" max="1000">
+            <span id="ht_target_temp_desc" class="sr-only">Inserisci la temperatura target desiderata, deve essere maggiore della temperatura iniziale</span>
         </div>
         
         <div class="input-group">
             <label for="ht_water_volume">Water Volume (L)</label>
-            <input type="number" id="ht_water_volume" value="5.0" step="0.1">
+            <input type="number" id="ht_water_volume" value="5.0" step="0.1"
+                   aria-label="Volume dell'acqua in litri"
+                   aria-describedby="ht_water_volume_desc"
+                   aria-required="true"
+                   min="0.001" max="10000">
+            <span id="ht_water_volume_desc" class="sr-only">Inserisci il volume dell'acqua in litri, tra 0.001L e 10000L</span>
         </div>
         
         <div class="input-group">
             <label for="ht_heater_power">Heater Power (W)</label>
-            <input type="number" id="ht_heater_power" value="2000.0" step="1">
+            <input type="number" id="ht_heater_power" value="2000.0" step="1"
+                   aria-label="Potenza del riscaldatore in Watt"
+                   aria-describedby="ht_heater_power_desc"
+                   aria-required="true"
+                   min="1" max="100000">
+            <span id="ht_heater_power_desc" class="sr-only">Inserisci la potenza del riscaldatore in Watt, tra 1W e 100000W</span>
         </div>
         
         <div class="input-group">
             <label for="ht_room_temp">Room Temperature (°C)</label>
-            <input type="number" id="ht_room_temp" value="20.0" step="0.1">
+            <input type="number" id="ht_room_temp" value="20.0" step="0.1"
+                   aria-label="Temperatura ambiente in gradi Celsius"
+                   aria-describedby="ht_room_temp_desc"
+                   aria-required="true"
+                   min="-273" max="100">
+            <span id="ht_room_temp_desc" class="sr-only">Inserisci la temperatura ambiente in gradi Celsius</span>
         </div>
         
         <div class="input-group">
             <label for="ht_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
-            <input type="number" id="ht_heat_transfer_coeff" value="15.0" step="0.1">
+            <input type="number" id="ht_heat_transfer_coeff" value="15.0" step="0.1"
+                   aria-label="Coefficiente di trasferimento termico in Watt per metro quadro per grado Celsius"
+                   aria-describedby="ht_heat_transfer_coeff_desc"
+                   aria-required="true"
+                   min="0.1" max="1000">
+            <span id="ht_heat_transfer_coeff_desc" class="sr-only">Inserisci il coefficiente di trasferimento termico</span>
         </div>
         
         <div class="input-group">
             <label for="ht_surface_area">External Surface Area</label>
             <div class="input-with-unit">
-                <input type="number" id="ht_surface_area" value="0.5" step="0.01">
-                <select id="ht_surface_area_unit" onchange="convertSurfaceArea('ht')">
+                <input type="number" id="ht_surface_area" value="0.5" step="0.01"
+                       aria-label="Area della superficie esterna"
+                       aria-describedby="ht_surface_area_desc"
+                       aria-required="true"
+                       min="0.0001" max="1000">
+                <select id="ht_surface_area_unit" onchange="convertSurfaceArea('ht')"
+                        aria-label="Unità di misura per l'area della superficie">
                     <option value="m2">m²</option>
                     <option value="cm2">cm²</option>
                 </select>
             </div>
+            <span id="ht_surface_area_desc" class="sr-only">Inserisci l'area della superficie esterna</span>
         </div>
         
         <div class="input-group">
             <label for="ht_stainless_steel_volume">Stainless Steel Volume</label>
             <div class="input-with-unit">
-                <input type="number" id="ht_stainless_steel_volume" value="0.001" step="0.0001">
-                <select id="ht_stainless_steel_volume_unit" onchange="convertVolume('ht')">
+                <input type="number" id="ht_stainless_steel_volume" value="0.001" step="0.0001"
+                       aria-label="Volume dell'acciaio inox"
+                       aria-describedby="ht_stainless_steel_volume_desc"
+                       aria-required="true"
+                       min="0.000001" max="10">
+                <select id="ht_stainless_steel_volume_unit" onchange="convertVolume('ht')"
+                        aria-label="Unità di misura per il volume dell'acciaio">
                     <option value="m3">m³</option>
                     <option value="cm3">cm³</option>
                 </select>
             </div>
+            <span id="ht_stainless_steel_volume_desc" class="sr-only">Inserisci il volume dell'acciaio inox</span>
         </div>
         
-        <div class="action-buttons">
-            <button class="action-btn reset" onclick="resetToDefault('heating')">Reset to Default</button>
-            <button class="action-btn save" onclick="saveParameters('heating')">Save Parameters</button>
-            <button class="action-btn load" onclick="loadParameters('heating')">Load Parameters</button>
+        <div class="action-buttons" role="group" aria-label="Azioni parametri">
+            <button class="action-btn reset" onclick="resetToDefault('heating')" 
+                    aria-label="Ripristina i parametri ai valori predefiniti">Reset to Default</button>
+            <button class="action-btn save" onclick="saveParameters('heating')"
+                    aria-label="Salva i parametri correnti">Save Parameters</button>
+            <button class="action-btn load" onclick="loadParameters('heating')"
+                    aria-label="Carica i parametri salvati">Load Parameters</button>
         </div>
         
-        <button class="calculate-btn" onclick="calculateHeatingTime()">Calculate Heating Time</button>
+        <button class="calculate-btn" onclick="calculateHeatingTime()" aria-label="Calcola il tempo di riscaldamento">Calculate Heating Time</button>
         
-        <div class="results-section">
+        <div class="results-section" role="region" aria-label="Risultati calcolo">
             <h3>Risultati:</h3>
             <div class="result-group">
                 <label>Estimated Heating Time:</label>
-                <div class="result-value" id="heating-result"></div>
+                <div class="result-value" id="heating-result" role="status" aria-live="polite" aria-atomic="true"></div>
             </div>
             <div class="result-group">
                 <label>Time in Seconds (s):</label>
-                <div class="result-value" id="heating-seconds"></div>
+                <div class="result-value" id="heating-seconds" role="status" aria-live="polite" aria-atomic="true"></div>
             </div>
+            <button class="export-btn" onclick="exportHeatingResults()" aria-label="Esporta risultati in formato CSV">
+                📥 Esporta CSV
+            </button>
         </div>
     </div>
 
     <!-- Power Calculator -->
-    <div class="calculator" id="power-calculator">
+    <div class="calculator" id="power-calculator" role="main" aria-label="Calcolatore potenza">
         <div class="calculator-header">
             <div class="calculator-title">⚡ Power Calculator</div>
-            <button class="back-btn" onclick="showMenu()">← Menu</button>
+            <button class="back-btn" onclick="showMenu()" aria-label="Torna al menu principale">← Menu</button>
         </div>
         
         <div class="input-group">
@@ -785,9 +1113,9 @@
             <button class="action-btn load" onclick="loadParameters('power')">Load Parameters</button>
         </div>
         
-        <button class="calculate-btn" onclick="calculatePower()">Calculate Required Power</button>
+        <button class="calculate-btn" onclick="calculatePower()" aria-label="Calcola la potenza richiesta">Calculate Required Power</button>
         
-        <div class="results-section">
+        <div class="results-section" role="region" aria-label="Risultati calcolo potenza">
             <h3>Risultati:</h3>
             <div class="result-group">
                 <label>Total Power Required (W/h):</label>
@@ -809,14 +1137,17 @@
                 <label>Required Heater Power (W):</label>
                 <div class="result-value" id="instant-power"></div>
             </div>
+            <button class="export-btn" onclick="exportPowerResults()" aria-label="Esporta risultati in formato CSV">
+                📥 Esporta CSV
+            </button>
         </div>
     </div>
 
     <!-- Cooling Time Calculator -->
-    <div class="calculator" id="cooling-calculator">
+    <div class="calculator" id="cooling-calculator" role="main" aria-label="Calcolatore tempo di raffreddamento">
         <div class="calculator-header">
             <div class="calculator-title">❄️ Cooling Time Calculator</div>
-            <button class="back-btn" onclick="showMenu()">← Menu</button>
+            <button class="back-btn" onclick="showMenu()" aria-label="Torna al menu principale">← Menu</button>
         </div>
         
         <div class="input-group">
@@ -872,9 +1203,9 @@
             <button class="action-btn load" onclick="loadParameters('cooling')">Load Parameters</button>
         </div>
         
-        <button class="calculate-btn" onclick="calculateCoolingTime()">Calculate Cooling Time</button>
+        <button class="calculate-btn" onclick="calculateCoolingTime()" aria-label="Calcola il tempo di raffreddamento">Calculate Cooling Time</button>
         
-        <div class="results-section">
+        <div class="results-section" role="region" aria-label="Risultati calcolo raffreddamento">
             <h3>Risultati:</h3>
             <div class="result-group">
                 <label>Estimated Cooling Time:</label>
@@ -896,14 +1227,17 @@
                 <label>Total Power Lost Stainless Steel (W/h):</label>
                 <div class="result-value" id="cooling-total-power-lost-steel"></div>
             </div>
+            <button class="export-btn" onclick="exportCoolingResults()" aria-label="Esporta risultati in formato CSV">
+                📥 Esporta CSV
+            </button>
         </div>
     </div>
 
     <!-- Brewing Loss Calculator -->
-    <div class="calculator" id="brewing-calculator">
+    <div class="calculator" id="brewing-calculator" role="main" aria-label="Calcolatore perdite preparazione">
         <div class="calculator-header">
             <div class="calculator-title">☕ Brewing Loss Calculator</div>
-            <button class="back-btn" onclick="showMenu()">← Menu</button>
+            <button class="back-btn" onclick="showMenu()" aria-label="Torna al menu principale">← Menu</button>
         </div>
         
         <div class="input-group">
@@ -953,9 +1287,9 @@
             <button class="action-btn load" onclick="loadParameters('brewing')">Load Parameters</button>
         </div>
         
-        <button class="calculate-btn" onclick="calculateBrewingLoss()">Calculate Brewing Loss</button>
+        <button class="calculate-btn" onclick="calculateBrewingLoss()" aria-label="Calcola le perdite durante la preparazione">Calculate Brewing Loss</button>
         
-        <div class="results-section">
+        <div class="results-section" role="region" aria-label="Risultati calcolo perdite preparazione">
             <h3>Risultati:</h3>
             <div class="result-group">
                 <label>Boiler Final Temperature (°C):</label>
@@ -985,14 +1319,17 @@
                 <label>Brewing Energy Loss (W):</label>
                 <div class="result-value" id="brewing-energy-loss"></div>
             </div>
+            <button class="export-btn" onclick="exportBrewingResults()" aria-label="Esporta risultati in formato CSV">
+                📥 Esporta CSV
+            </button>
         </div>
     </div>
 
     <!-- Simple Calculator -->
-    <div class="simple-calculator" id="simple-calculator">
+    <div class="simple-calculator" id="simple-calculator" role="main" aria-label="Calcolatrice semplice">
         <div class="calculator-header">
             <div class="calculator-title">🔢 Simple Calculator</div>
-            <button class="back-btn" onclick="showMenu()">← Menu</button>
+            <button class="back-btn" onclick="showMenu()" aria-label="Torna al menu principale">← Menu</button>
         </div>
         
         <div class="display">
@@ -1028,26 +1365,32 @@
     </div>
 
     <!-- Temperature Probe Calculator -->
-    <div class="calculator" id="tempprobe-calculator">
+    <div class="calculator" id="tempprobe-calculator" role="main" aria-label="Calcolatore sonde temperatura">
         <div class="calculator-header">
             <div class="calculator-title">🌡️ Temp Probe Calculator</div>
-            <button class="back-btn" onclick="showMenu()">← Menu</button>
+            <button class="back-btn" onclick="showMenu()" aria-label="Torna al menu principale">← Menu</button>
         </div>
         
         <div class="input-group">
             <label for="tp_input_type">Input Type</label>
-            <select id="tp_input_type" onchange="toggleInputFields()">
+            <select id="tp_input_type" onchange="toggleInputFields()"
+                    aria-label="Tipo di input: temperatura o resistenza"
+                    aria-describedby="tp_input_type_desc">
                 <option value="temperature">Temperature → Resistance</option>
                 <option value="resistance">Resistance → Temperature</option>
             </select>
+            <span id="tp_input_type_desc" class="sr-only">Seleziona se vuoi inserire temperatura o resistenza</span>
         </div>
         
         <div class="input-group">
             <label for="tp_probe_type">Probe Type</label>
-            <select id="tp_probe_type" onchange="onProbeTypeChange()">
+            <select id="tp_probe_type" onchange="onProbeTypeChange()"
+                    aria-label="Tipo di sonda termica"
+                    aria-describedby="tp_probe_type_desc">
                 <option value="ntc3k3">NTC 3.3kΩ @ 100°C</option>
                 <option value="pt1000">PT1000 (1000Ω @ 0°C)</option>
             </select>
+            <span id="tp_probe_type_desc" class="sr-only">Seleziona il tipo di sonda termica da utilizzare</span>
         </div>
         
         <div class="input-group" id="tp_limits" style="display: none;">
@@ -1067,25 +1410,29 @@
             <input type="number" id="tp_resistance" placeholder="Enter resistance value" step="0.01" min="0">
         </div>
         
-        <button class="calculate-btn" onclick="calculateTempProbe();">Calculate</button>
+        <button class="calculate-btn" onclick="calculateTempProbe();" aria-label="Calcola temperatura o resistenza">Calculate</button>
         
-        <div class="result-box" id="tempprobe-result" style="display: none; margin-top: 20px; margin-bottom: 30px;">
+        <div class="result-box" id="tempprobe-result" style="display: none; margin-top: 20px; margin-bottom: 30px;" role="region" aria-label="Risultato calcolo sonda">
             <h3>Result</h3>
             <div class="result-item">
-                <span class="result-label" id="tp_result_label">Resistance:</span>
-                <span class="result-value" id="tp_result_value">-</span>
-                <span class="result-unit" id="tp_result_unit">Ω</span>
+                <span class="result-label" id="tp_result_label" aria-label="Etichetta risultato">Resistance:</span>
+                <span class="result-value" id="tp_result_value" role="status" aria-live="polite" aria-atomic="true">-</span>
+                <span class="result-unit" id="tp_result_unit" aria-label="Unità di misura">Ω</span>
             </div>
             
             <!-- Result Information -->
-            <div class="result-info">
+            <div class="result-info" role="status" aria-live="polite">
                 <p id="tp_result_info">Enter values above to calculate</p>
             </div>
+            
+            <button class="export-btn" onclick="exportTempProbeResults()" aria-label="Esporta risultati in formato CSV" style="margin-top: 15px;">
+                📥 Esporta CSV
+            </button>
         </div>
         
-                        <div class="reset-container">
-                    <button class="reset-btn" onclick="resetTempProbe()">Reset</button>
-                </div>
+        <div class="reset-container">
+            <button class="reset-btn" onclick="resetTempProbe()" aria-label="Ripristina tutti i campi del calcolatore sonda">Reset</button>
+        </div>
     </div>
 
     <!-- Load individual probe data files -->
@@ -1325,31 +1672,234 @@
             }
         }
 
-        function showNotification(message) {
-            // Create a simple notification
+        function showNotification(message, type = 'success') {
+            // Create a notification with type support
             const notification = document.createElement('div');
+            const colors = {
+                success: { bg: '#27ae60', icon: '✓' },
+                error: { bg: '#e74c3c', icon: '⚠' },
+                info: { bg: '#3498db', icon: 'ℹ' },
+                warning: { bg: '#f39c12', icon: '⚠' }
+            };
+            const config = colors[type] || colors.success;
+            
+            notification.className = 'notification';
+            notification.setAttribute('role', 'alert');
+            notification.setAttribute('aria-live', 'polite');
             notification.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: #27ae60;
+                background: ${config.bg};
                 color: white;
                 padding: 15px 20px;
                 border-radius: 10px;
-                z-index: 1000;
+                z-index: 10000;
                 font-weight: bold;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: slideIn 0.3s ease-out;
+                max-width: 400px;
             `;
-            notification.textContent = message;
+            notification.innerHTML = `
+                <span style="font-size: 1.2em;">${config.icon}</span>
+                <span>${message}</span>
+            `;
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.remove();
-            }, 3000);
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, type === 'error' ? 5000 : 3000);
         }
+        
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
 
+        // Enhanced input validation helper with accessibility support
+        function validateCalculatorInputs(prefix, validations) {
+            const errors = [];
+            let firstInvalidInput = null;
+            
+            for (const [key, {min, max, required = true, customMessage}] of Object.entries(validations)) {
+                const input = document.getElementById(prefix + key);
+                if (!input) continue;
+                
+                const value = parseFloat(input.value);
+                const label = input.previousElementSibling?.textContent || key.replace(/_/g, ' ');
+                
+                // Clear previous error state
+                input.setAttribute('aria-invalid', 'false');
+                input.removeAttribute('aria-describedby');
+                const existingError = document.getElementById(prefix + key + '_error');
+                if (existingError) existingError.remove();
+                
+                if (required && (isNaN(value) || input.value === '' || input.value.trim() === '')) {
+                    const errorMsg = customMessage || `${label} è obbligatorio`;
+                    errors.push(errorMsg);
+                    markInputAsInvalid(input, prefix + key, errorMsg);
+                    if (!firstInvalidInput) firstInvalidInput = input;
+                } else if (!isNaN(value)) {
+                    if (min !== undefined && value < min) {
+                        const errorMsg = customMessage || `${label} deve essere almeno ${min}`;
+                        errors.push(errorMsg);
+                        markInputAsInvalid(input, prefix + key, errorMsg);
+                        if (!firstInvalidInput) firstInvalidInput = input;
+                    } else if (max !== undefined && value > max) {
+                        const errorMsg = customMessage || `${label} deve essere al massimo ${max}`;
+                        errors.push(errorMsg);
+                        markInputAsInvalid(input, prefix + key, errorMsg);
+                        if (!firstInvalidInput) firstInvalidInput = input;
+                    } else {
+                        markInputAsValid(input, prefix + key);
+                    }
+                }
+            }
+            
+            if (errors.length > 0) {
+                showNotification(errors[0], 'error');
+                // Focus first invalid input for accessibility
+                if (firstInvalidInput) {
+                    setTimeout(() => firstInvalidInput.focus(), 100);
+                }
+                return false;
+            }
+            return true;
+        }
+        
+        function markInputAsInvalid(input, inputId, errorMessage) {
+            input.style.borderColor = '#e74c3c';
+            input.style.borderWidth = '2px';
+            input.setAttribute('aria-invalid', 'true');
+            
+            // Create error message element
+            const errorId = inputId + '_error';
+            let errorElement = document.getElementById(errorId);
+            if (!errorElement) {
+                errorElement = document.createElement('span');
+                errorElement.id = errorId;
+                errorElement.className = 'error-message';
+                errorElement.setAttribute('role', 'alert');
+                errorElement.setAttribute('aria-live', 'polite');
+                errorElement.style.cssText = `
+                    display: block;
+                    color: #e74c3c;
+                    font-size: 0.85rem;
+                    margin-top: 4px;
+                    font-weight: 500;
+                `;
+                input.parentNode.appendChild(errorElement);
+            }
+            errorElement.textContent = errorMessage;
+            input.setAttribute('aria-describedby', errorId);
+        }
+        
+        function markInputAsValid(input, inputId) {
+            input.style.borderColor = '#27ae60';
+            input.style.borderWidth = '2px';
+            input.setAttribute('aria-invalid', 'false');
+            
+            const errorId = inputId + '_error';
+            const errorElement = document.getElementById(errorId);
+            if (errorElement) {
+                errorElement.remove();
+            }
+            input.removeAttribute('aria-describedby');
+            
+            // Reset border after 2 seconds
+            setTimeout(() => {
+                input.style.borderColor = '';
+                input.style.borderWidth = '';
+            }, 2000);
+        }
+        
+        // Real-time validation on input
+        function setupRealTimeValidation(inputId, validation) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            input.addEventListener('blur', () => {
+                const value = parseFloat(input.value);
+                const prefix = inputId.substring(0, inputId.lastIndexOf('_') + 1);
+                const key = inputId.substring(inputId.lastIndexOf('_') + 1);
+                
+                if (validation.required && (isNaN(value) || input.value === '')) {
+                    markInputAsInvalid(input, inputId, validation.customMessage || `${key} è obbligatorio`);
+                } else if (!isNaN(value)) {
+                    if (validation.min !== undefined && value < validation.min) {
+                        markInputAsInvalid(input, inputId, validation.customMessage || `${key} deve essere almeno ${validation.min}`);
+                    } else if (validation.max !== undefined && value > validation.max) {
+                        markInputAsInvalid(input, inputId, validation.customMessage || `${key} deve essere al massimo ${validation.max}`);
+                    } else {
+                        markInputAsValid(input, inputId);
+                    }
+                }
+            });
+        }
+        
         // Calculation functions with correct algorithms from boiler_calculator.py
         function calculateHeatingTime() {
             try {
+                // Show loading state
+                const resultDiv = document.getElementById('heating-result');
+                const secondsDiv = document.getElementById('heating-seconds');
+                if (resultDiv) resultDiv.textContent = 'Calcolo in corso...';
+                if (secondsDiv) secondsDiv.textContent = '...';
+                
+                // Comprehensive validation
+                if (!validateCalculatorInputs('ht_', {
+                    initial_temp: { min: -273, max: 1000, required: true, customMessage: 'La temperatura iniziale deve essere tra -273°C e 1000°C' },
+                    target_temp: { min: -273, max: 1000, required: true, customMessage: 'La temperatura target deve essere tra -273°C e 1000°C e maggiore della temperatura iniziale' },
+                    water_volume: { min: 0.001, max: 10000, required: true, customMessage: 'Il volume dell\'acqua deve essere tra 0.001L e 10000L' },
+                    heater_power: { min: 1, max: 100000, required: true, customMessage: 'La potenza del riscaldatore deve essere tra 1W e 100000W' },
+                    room_temp: { min: -273, max: 100, required: true },
+                    heat_transfer_coeff: { min: 0.1, max: 1000, required: true },
+                    surface_area: { min: 0.0001, max: 1000, required: true },
+                    stainless_steel_volume: { min: 0.000001, max: 10, required: true }
+                })) {
+                    if (resultDiv) resultDiv.textContent = '-';
+                    if (secondsDiv) secondsDiv.textContent = '-';
+                    return;
+                }
+                
+                // Additional logical validation
+                const initialTemp = parseFloat(document.getElementById('ht_initial_temp').value);
+                const targetTemp = parseFloat(document.getElementById('ht_target_temp').value);
+                if (targetTemp <= initialTemp) {
+                    showNotification('La temperatura target deve essere maggiore della temperatura iniziale', 'error');
+                    document.getElementById('ht_target_temp').focus();
+                    if (resultDiv) resultDiv.textContent = '-';
+                    if (secondsDiv) secondsDiv.textContent = '-';
+                    return;
+                }
+                
                 const params = getCalculatorParams('ht_');
                 
                 // Override with normalized values for surface area and volume
@@ -1404,12 +1954,51 @@
                 document.getElementById('heating-seconds').textContent = seconds_result;
                 
             } catch (error) {
-                alert('Errore nel calcolo: ' + error.message);
+                console.error('Calculation error:', error);
+                showNotification('Errore nel calcolo: ' + error.message, 'error');
             }
         }
 
         function calculatePower() {
             try {
+                // Show loading state
+                const resultDivs = ['total-power', 'power-to-water', 'power-to-steel', 'power-lost', 'instant-power'];
+                resultDivs.forEach(id => {
+                    const div = document.getElementById(id);
+                    if (div) div.textContent = 'Calcolo...';
+                });
+                
+                // Comprehensive validation
+                if (!validateCalculatorInputs('pc_', {
+                    initial_temp: { min: -273, max: 1000, required: true },
+                    target_temp: { min: -273, max: 1000, required: true },
+                    water_volume: { min: 0.001, max: 10000, required: true },
+                    time_required: { min: 1, max: 86400, required: true, customMessage: 'Il tempo richiesto deve essere tra 1 secondo e 24 ore (86400 secondi)' },
+                    room_temp: { min: -273, max: 100, required: true },
+                    heat_transfer_coeff: { min: 0.1, max: 1000, required: true },
+                    surface_area: { min: 0.0001, max: 1000, required: true },
+                    stainless_steel_volume: { min: 0.000001, max: 10, required: true }
+                })) {
+                    resultDivs.forEach(id => {
+                        const div = document.getElementById(id);
+                        if (div) div.textContent = '-';
+                    });
+                    return;
+                }
+                
+                // Additional logical validation
+                const initialTemp = parseFloat(document.getElementById('pc_initial_temp').value);
+                const targetTemp = parseFloat(document.getElementById('pc_target_temp').value);
+                if (targetTemp <= initialTemp) {
+                    showNotification('La temperatura target deve essere maggiore della temperatura iniziale', 'error');
+                    document.getElementById('pc_target_temp').focus();
+                    resultDivs.forEach(id => {
+                        const div = document.getElementById(id);
+                        if (div) div.textContent = '-';
+                    });
+                    return;
+                }
+                
                 const params = getCalculatorParams('pc_');
                 
                 // Override with normalized values for surface area and volume
@@ -1480,12 +2069,55 @@
                 document.getElementById('instant-power').textContent = total_power.toFixed(1);
                 
             } catch (error) {
-                alert('Errore nel calcolo: ' + error.message);
+                console.error('Calculation error:', error);
+                showNotification('Errore nel calcolo: ' + error.message, 'error');
             }
         }
 
         function calculateCoolingTime() {
             try {
+                // Show loading state
+                const resultDiv = document.getElementById('cooling-result');
+                const secondsDiv = document.getElementById('cooling-seconds');
+                if (resultDiv) resultDiv.textContent = 'Calcolo in corso...';
+                if (secondsDiv) secondsDiv.textContent = '...';
+                
+                // Comprehensive validation
+                if (!validateCalculatorInputs('ct_', {
+                    initial_temp: { min: -273, max: 1000, required: true },
+                    final_temp: { min: -273, max: 1000, required: true },
+                    water_volume: { min: 0.001, max: 10000, required: true },
+                    room_temp: { min: -273, max: 100, required: true },
+                    heat_transfer_coeff: { min: 0.1, max: 1000, required: true },
+                    surface_area: { min: 0.0001, max: 1000, required: true },
+                    stainless_steel_volume: { min: 0.000001, max: 10, required: true }
+                })) {
+                    if (resultDiv) resultDiv.textContent = '-';
+                    if (secondsDiv) secondsDiv.textContent = '-';
+                    return;
+                }
+                
+                // Additional logical validation
+                const initialTemp = parseFloat(document.getElementById('ct_initial_temp').value);
+                const finalTemp = parseFloat(document.getElementById('ct_final_temp').value);
+                const roomTemp = parseFloat(document.getElementById('ct_room_temp').value);
+                
+                if (finalTemp >= initialTemp) {
+                    showNotification('La temperatura finale deve essere minore della temperatura iniziale', 'error');
+                    document.getElementById('ct_final_temp').focus();
+                    if (resultDiv) resultDiv.textContent = '-';
+                    if (secondsDiv) secondsDiv.textContent = '-';
+                    return;
+                }
+                
+                if (finalTemp < roomTemp) {
+                    showNotification('La temperatura finale non può essere minore della temperatura ambiente', 'error');
+                    document.getElementById('ct_final_temp').focus();
+                    if (resultDiv) resultDiv.textContent = '-';
+                    if (secondsDiv) secondsDiv.textContent = '-';
+                    return;
+                }
+                
                 const params = getCalculatorParams('ct_');
                 
                 // Override with normalized values for surface area and volume
@@ -1550,12 +2182,37 @@
                 document.getElementById('cooling-total-power-lost-steel').textContent = total_power_lost_steel.toFixed(1);
                 
             } catch (error) {
-                alert('Errore nel calcolo: ' + error.message);
+                console.error('Calculation error:', error);
+                showNotification('Errore nel calcolo: ' + error.message, 'error');
             }
         }
 
         function calculateBrewingLoss() {
             try {
+                // Show loading state
+                const resultDivs = ['final-temp', 'lost-temp', 'average-brewed-temp', 'initial-brewed-temp', 'final-brewed-temp', 'total-brewed-volume', 'brewing-energy-loss'];
+                resultDivs.forEach(id => {
+                    const div = document.getElementById(id);
+                    if (div) div.textContent = 'Calcolo...';
+                });
+                
+                // Comprehensive validation
+                if (!validateCalculatorInputs('br_', {
+                    initial_temp: { min: 0, max: 200, required: true, customMessage: 'La temperatura iniziale deve essere tra 0°C e 200°C' },
+                    water_volume: { min: 0.001, max: 10000, required: true },
+                    stainless_steel_volume: { min: 0.000001, max: 10, required: true },
+                    applied_heater_power: { min: 0, max: 100000, required: true },
+                    brewing_flow_rate: { min: 0.1, max: 1000, required: true, customMessage: 'La portata deve essere tra 0.1 ml/s e 1000 ml/s' },
+                    brewing_time_duration: { min: 0.1, max: 3600, required: true, customMessage: 'La durata deve essere tra 0.1 secondi e 1 ora' },
+                    plumbing_temperature: { min: -273, max: 100, required: true }
+                })) {
+                    resultDivs.forEach(id => {
+                        const div = document.getElementById(id);
+                        if (div) div.textContent = '-';
+                    });
+                    return;
+                }
+                
                 const params = getCalculatorParams('br_');
                 
                 // Override with normalized values for volume
@@ -1622,7 +2279,8 @@
                 document.getElementById('brewing-energy-loss').textContent = brewing_energy_loss.toFixed(1);
                 
             } catch (error) {
-                alert('Errore nel calcolo: ' + error.message);
+                console.error('Calculation error:', error);
+                showNotification('Errore nel calcolo: ' + error.message, 'error');
             }
         }
 
@@ -1698,7 +2356,7 @@
                         break;
                     case '÷':
                         if (current === 0) {
-                            alert('Non puoi dividere per zero!');
+                            showNotification('Non puoi dividere per zero!', 'error');
                             return;
                         }
                         computation = prev / current;
@@ -1834,6 +2492,52 @@
             e.preventDefault();
             deferredPrompt = e;
         });
+        
+        // Offline indicator
+        function updateOnlineStatus() {
+            const isOnline = navigator.onLine;
+            let indicator = document.getElementById('offline-indicator');
+            
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'offline-indicator';
+                indicator.setAttribute('role', 'status');
+                indicator.setAttribute('aria-live', 'polite');
+                indicator.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 12px 24px;
+                    border-radius: 25px;
+                    z-index: 10000;
+                    font-weight: bold;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                    transition: all 0.3s ease;
+                    display: none;
+                `;
+                document.body.appendChild(indicator);
+            }
+            
+            if (!isOnline) {
+                indicator.textContent = '🔴 Modalità offline - Alcune funzionalità potrebbero essere limitate';
+                indicator.style.background = '#e74c3c';
+                indicator.style.color = 'white';
+                indicator.style.display = 'block';
+            } else {
+                indicator.textContent = '🟢 Connesso';
+                indicator.style.background = '#27ae60';
+                indicator.style.color = 'white';
+                indicator.style.display = 'block';
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 2000);
+            }
+        }
+        
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus(); // Check on load
 
         initializeUnits();
 

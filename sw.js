@@ -1,10 +1,13 @@
-const CACHE_NAME = 'calcolatrice-pwa-v1';
+const CACHE_NAME = 'calcolatrice-pwa-v2';
 const urlsToCache = [
-  '/Boiler_Calculator_PWA/',
-  '/Boiler_Calculator_PWA/index.html',
-  '/Boiler_Calculator_PWA/manifest.json',
-  '/Boiler_Calculator_PWA/icon.svg',
-  '/Boiler_Calculator_PWA/icon.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon.svg',
+  './icon.png',
+  './ntc3k3.js',
+  './pt1000.js',
+  './temp_probe_data_new.js'
 ];
 
 // Install event - cache resources
@@ -13,9 +16,13 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return cache.addAll(urlsToCache).catch((error) => {
+          console.error('Failed to cache some resources:', error);
+        });
       })
   );
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
 });
 
 // Fetch event - serve from cache when offline
@@ -24,7 +31,12 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request)
       .then((response) => {
         // Return cached version or fetch from network
-        return response || fetch(event.request);
+        return response || fetch(event.request).catch(() => {
+          // If fetch fails and it's a navigation request, return index.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+        });
       }
     )
   );
@@ -42,6 +54,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Take control of all pages immediately
+      return self.clients.claim();
     })
   );
 }); 

@@ -1570,6 +1570,9 @@
             document.querySelectorAll('.calculator, .simple-calculator').forEach(calc => {
                 calc.classList.remove('active');
             });
+            // Show dark mode toggle on main menu
+            const toggle = document.querySelector('.dark-mode-toggle');
+            if (toggle) toggle.style.display = 'flex';
         }
 
         function showCalculator(type) {
@@ -1585,6 +1588,9 @@
             } else {
                 document.getElementById(type + '-calculator').classList.add('active');
             }
+            // Hide dark mode toggle when in calculator view
+            const toggle = document.querySelector('.dark-mode-toggle');
+            if (toggle) toggle.style.display = 'none';
         }
 
         // Parameter management functions
@@ -2538,6 +2544,269 @@
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus(); // Check on load
+
+        // Dark Mode Functionality
+        function initDarkMode() {
+            const savedMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedMode === 'true' || (savedMode === null && prefersDark)) {
+                document.body.classList.add('dark-mode');
+                updateDarkModeIcon(true);
+            } else {
+                document.body.classList.remove('dark-mode');
+                updateDarkModeIcon(false);
+            }
+        }
+        
+        function toggleDarkMode() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark.toString());
+            updateDarkModeIcon(isDark);
+            showNotification(isDark ? 'Modalità scura attivata' : 'Modalità chiara attivata', 'info');
+        }
+        
+        function updateDarkModeIcon(isDark) {
+            const icon = document.getElementById('dark-mode-icon');
+            if (icon) {
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
+        }
+        
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('darkMode')) {
+                    if (e.matches) {
+                        document.body.classList.add('dark-mode');
+                        updateDarkModeIcon(true);
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                        updateDarkModeIcon(false);
+                    }
+                }
+            });
+        }
+        
+        // Initialize dark mode on load
+        initDarkMode();
+        
+        // Export to CSV Functions
+        function exportToCSV(data, filename) {
+            if (!data || data.length === 0) {
+                showNotification('Nessun dato da esportare', 'error');
+                return;
+            }
+            
+            try {
+                // Convert data to CSV format
+                const headers = Object.keys(data[0]);
+                const csvContent = [
+                    headers.join(','),
+                    ...data.map(row => 
+                        headers.map(header => {
+                            const value = row[header];
+                            // Escape commas and quotes, wrap in quotes if contains special chars
+                            if (value === null || value === undefined) return '';
+                            const stringValue = String(value);
+                            if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+                                return `"${stringValue.replace(/"/g, '""')}"`;
+                            }
+                            return stringValue;
+                        }).join(',')
+                    )
+                ].join('\n');
+                
+                // Add BOM for UTF-8 to support Excel
+                const BOM = '\uFEFF';
+                const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showNotification('File CSV esportato con successo', 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showNotification('Errore durante l\'esportazione: ' + error.message, 'error');
+            }
+        }
+        
+        function exportHeatingResults() {
+            try {
+                const result = document.getElementById('heating-result').textContent;
+                const seconds = document.getElementById('heating-seconds').textContent;
+                
+                if (!result || result === '-' || result === 'Calcolo in corso...' || result === '') {
+                    showNotification('Esegui prima un calcolo', 'error');
+                    return;
+                }
+                
+                const data = [{
+                    'Calcolatore': 'Heating Time Calculator',
+                    'Temperatura Iniziale (°C)': document.getElementById('ht_initial_temp').value,
+                    'Temperatura Target (°C)': document.getElementById('ht_target_temp').value,
+                    'Volume Acqua (L)': document.getElementById('ht_water_volume').value,
+                    'Potenza Riscaldatore (W)': document.getElementById('ht_heater_power').value,
+                    'Temperatura Ambiente (°C)': document.getElementById('ht_room_temp').value,
+                    'Coefficiente Trasferimento Termico (W/m²·°C)': document.getElementById('ht_heat_transfer_coeff').value,
+                    'Area Superficie': document.getElementById('ht_surface_area').value + ' ' + document.getElementById('ht_surface_area_unit').value,
+                    'Volume Acciaio Inox': document.getElementById('ht_stainless_steel_volume').value + ' ' + document.getElementById('ht_stainless_steel_volume_unit').value,
+                    'Tempo Stimato': result,
+                    'Tempo in Secondi': seconds,
+                    'Data Calcolo': new Date().toLocaleString('it-IT')
+                }];
+                
+                exportToCSV(data, `heating_time_${Date.now()}.csv`);
+            } catch (error) {
+                console.error('Export heating error:', error);
+                showNotification('Errore durante l\'esportazione: ' + error.message, 'error');
+            }
+        }
+        
+        function exportPowerResults() {
+            try {
+                const totalPower = document.getElementById('total-power').textContent;
+                const instantPower = document.getElementById('instant-power').textContent;
+                
+                if (!totalPower || totalPower === '-' || totalPower === 'Calcolo...' || totalPower === '') {
+                    showNotification('Esegui prima un calcolo', 'error');
+                    return;
+                }
+                
+                const data = [{
+                    'Calcolatore': 'Power Calculator',
+                    'Temperatura Iniziale (°C)': document.getElementById('pc_initial_temp').value,
+                    'Temperatura Target (°C)': document.getElementById('pc_target_temp').value,
+                    'Volume Acqua (L)': document.getElementById('pc_water_volume').value,
+                    'Tempo Richiesto (s)': document.getElementById('pc_time_required').value,
+                    'Temperatura Ambiente (°C)': document.getElementById('pc_room_temp').value,
+                    'Coefficiente Trasferimento Termico (W/m²·°C)': document.getElementById('pc_heat_transfer_coeff').value,
+                    'Area Superficie': document.getElementById('pc_surface_area').value + ' ' + document.getElementById('pc_surface_area_unit').value,
+                    'Volume Acciaio Inox': document.getElementById('pc_stainless_steel_volume').value + ' ' + document.getElementById('pc_stainless_steel_volume_unit').value,
+                    'Potenza Totale Richiesta (W/h)': totalPower,
+                    'Potenza ad Acqua (W/h)': document.getElementById('power-to-water').textContent,
+                    'Potenza ad Acciaio (W/h)': document.getElementById('power-to-steel').textContent,
+                    'Potenza Persa (W/h)': document.getElementById('power-lost').textContent,
+                    'Potenza Istantanea Richiesta (W)': instantPower,
+                    'Data Calcolo': new Date().toLocaleString('it-IT')
+                }];
+                
+                exportToCSV(data, `power_calculation_${Date.now()}.csv`);
+            } catch (error) {
+                console.error('Export power error:', error);
+                showNotification('Errore durante l\'esportazione: ' + error.message, 'error');
+            }
+        }
+        
+        function exportCoolingResults() {
+            try {
+                const result = document.getElementById('cooling-result').textContent;
+                const seconds = document.getElementById('cooling-seconds').textContent;
+                
+                if (!result || result === '-' || result === 'Calcolo in corso...' || result === '') {
+                    showNotification('Esegui prima un calcolo', 'error');
+                    return;
+                }
+                
+                const data = [{
+                    'Calcolatore': 'Cooling Time Calculator',
+                    'Temperatura Iniziale (°C)': document.getElementById('ct_initial_temp').value,
+                    'Temperatura Finale (°C)': document.getElementById('ct_final_temp').value,
+                    'Volume Acqua (L)': document.getElementById('ct_water_volume').value,
+                    'Temperatura Ambiente (°C)': document.getElementById('ct_room_temp').value,
+                    'Coefficiente Trasferimento Termico (W/m²·°C)': document.getElementById('ct_heat_transfer_coeff').value,
+                    'Area Superficie': document.getElementById('ct_surface_area').value + ' ' + document.getElementById('ct_surface_area_unit').value,
+                    'Volume Acciaio Inox': document.getElementById('ct_stainless_steel_volume').value + ' ' + document.getElementById('ct_stainless_steel_volume_unit').value,
+                    'Tempo Stimato': result,
+                    'Tempo in Secondi': seconds,
+                    'Potenza Totale Persa (W/h)': document.getElementById('cooling-total-power-lost').textContent,
+                    'Potenza Persa Acqua (W/h)': document.getElementById('cooling-total-power-lost-water').textContent,
+                    'Potenza Persa Acciaio (W/h)': document.getElementById('cooling-total-power-lost-steel').textContent,
+                    'Data Calcolo': new Date().toLocaleString('it-IT')
+                }];
+                
+                exportToCSV(data, `cooling_time_${Date.now()}.csv`);
+            } catch (error) {
+                console.error('Export cooling error:', error);
+                showNotification('Errore durante l\'esportazione: ' + error.message, 'error');
+            }
+        }
+        
+        function exportBrewingResults() {
+            try {
+                const finalTemp = document.getElementById('final-temp').textContent;
+                
+                if (!finalTemp || finalTemp === '-' || finalTemp === 'Calcolo...' || finalTemp === '') {
+                    showNotification('Esegui prima un calcolo', 'error');
+                    return;
+                }
+                
+                const data = [{
+                    'Calcolatore': 'Brewing Loss Calculator',
+                    'Temperatura Iniziale (°C)': document.getElementById('br_initial_temp').value,
+                    'Volume Acqua (L)': document.getElementById('br_water_volume').value,
+                    'Volume Acciaio Inox': document.getElementById('br_stainless_steel_volume').value + ' ' + document.getElementById('br_stainless_steel_volume_unit').value,
+                    'Potenza Riscaldatore Applicata (W)': document.getElementById('br_applied_heater_power').value,
+                    'Portata Preparazione (ml/s)': document.getElementById('br_brewing_flow_rate').value,
+                    'Durata Preparazione (s)': document.getElementById('br_brewing_time_duration').value,
+                    'Temperatura Tubazioni (°C)': document.getElementById('br_plumbing_temperature').value,
+                    'Temperatura Finale Boiler (°C)': finalTemp,
+                    'Perdita Temperatura (°C)': document.getElementById('lost-temp').textContent,
+                    'Temperatura Media Preparata (°C)': document.getElementById('average-brewed-temp').textContent,
+                    'Temperatura Iniziale Preparata (°C)': document.getElementById('initial-brewed-temp').textContent,
+                    'Temperatura Finale Preparata (°C)': document.getElementById('final-brewed-temp').textContent,
+                    'Volume Totale Preparato (L)': document.getElementById('total-brewed-volume').textContent,
+                    'Perdita Energia Preparazione (W)': document.getElementById('brewing-energy-loss').textContent,
+                    'Data Calcolo': new Date().toLocaleString('it-IT')
+                }];
+                
+                exportToCSV(data, `brewing_loss_${Date.now()}.csv`);
+            } catch (error) {
+                console.error('Export brewing error:', error);
+                showNotification('Errore durante l\'esportazione: ' + error.message, 'error');
+            }
+        }
+        
+        function exportTempProbeResults() {
+            try {
+                const resultValue = document.getElementById('tp_result_value').textContent;
+                
+                if (!resultValue || resultValue === '-' || resultValue === '') {
+                    showNotification('Esegui prima un calcolo', 'error');
+                    return;
+                }
+                
+                const inputType = document.getElementById('tp_input_type').value;
+                const probeType = document.getElementById('tp_probe_type').value;
+                const inputValue = inputType === 'temperature' 
+                    ? document.getElementById('tp_temperature').value
+                    : document.getElementById('tp_resistance').value;
+                
+                const data = [{
+                    'Calcolatore': 'Temperature Probe Calculator',
+                    'Tipo Sonda': probeType === 'ntc3k3' ? 'NTC 3.3kΩ @ 100°C' : 'PT1000 (1000Ω @ 0°C)',
+                    'Tipo Input': inputType === 'temperature' ? 'Temperatura → Resistenza' : 'Resistenza → Temperatura',
+                    'Valore Input': inputValue + (inputType === 'temperature' ? ' °C' : ' Ω'),
+                    'Etichetta Risultato': document.getElementById('tp_result_label').textContent,
+                    'Valore Risultato': resultValue,
+                    'Unità': document.getElementById('tp_result_unit').textContent,
+                    'Informazioni': document.getElementById('tp_result_info').textContent,
+                    'Data Calcolo': new Date().toLocaleString('it-IT')
+                }];
+                
+                exportToCSV(data, `temp_probe_${Date.now()}.csv`);
+            } catch (error) {
+                console.error('Export temp probe error:', error);
+                showNotification('Errore durante l\'esportazione: ' + error.message, 'error');
+            }
+        }
 
         initializeUnits();
 

@@ -744,21 +744,21 @@
         /* Dark Mode Toggle Button */
         .dark-mode-toggle {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
             z-index: 1000;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             border-radius: 50px;
-            width: 60px;
-            height: 60px;
+            width: 48px;
+            height: 48px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             transition: all 0.3s ease;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: white;
         }
         
@@ -890,12 +890,12 @@
         <div class="menu-grid">
             <div class="menu-item" onclick="showCalculator('heating')" role="button" tabindex="0" aria-label="Apri calcolatore tempo di riscaldamento" onkeypress="if(event.key==='Enter') showCalculator('heating')">
                 <h3>🔥 Heating Time Calculator</h3>
-                <p>Calcola il tempo necessario per riscaldare l'acqua</p>
+                <p>Calcola il tempo di riscaldamento</p>
             </div>
             
             <div class="menu-item" onclick="showCalculator('power')" role="button" tabindex="0" aria-label="Apri calcolatore potenza" onkeypress="if(event.key==='Enter') showCalculator('power')">
                 <h3>⚡ Power Calculator</h3>
-                <p>Calcola la potenza necessaria per il riscaldamento</p>
+                <p>Calcola la potenza di riscaldamento</p>
             </div>
             
             <div class="menu-item" onclick="showCalculator('cooling')" role="button" tabindex="0" aria-label="Apri calcolatore tempo di raffreddamento" onkeypress="if(event.key==='Enter') showCalculator('cooling')">
@@ -915,7 +915,7 @@
             
             <div class="menu-item" onclick="showCalculator('tempprobe')" role="button" tabindex="0" aria-label="Apri calcolatore sonde temperatura" onkeypress="if(event.key==='Enter') showCalculator('tempprobe')">
                 <h3>🌡️ Temp Probe Calculator</h3>
-                <p>Calcola temperatura/resistenza per sonde NTC e PT</p>
+                <p>Calcolatore NTC PTC</p>
             </div>
         </div>
     </div>
@@ -958,6 +958,23 @@
         </div>
         
         <div class="input-group">
+            <label for="ht_stainless_steel_volume">Stainless Steel Volume</label>
+            <div class="input-with-unit">
+                <input type="number" id="ht_stainless_steel_volume" value="0.001" step="0.0001"
+                       aria-label="Volume dell'acciaio inox"
+                       aria-describedby="ht_stainless_steel_volume_desc"
+                       aria-required="true"
+                       min="0.0000000001" max="1000000000">
+                <select id="ht_stainless_steel_volume_unit" onchange="convertVolume('ht')"
+                        aria-label="Unità di misura per il volume dell'acciaio">
+                    <option value="m3">m³</option>
+                    <option value="cm3">cm³</option>
+                </select>
+            </div>
+            <span id="ht_stainless_steel_volume_desc" class="sr-only">Inserisci il volume dell'acciaio inox</span>
+        </div>
+        
+        <div class="input-group">
             <label for="ht_heater_power">Heater Power (W)</label>
             <input type="number" id="ht_heater_power" value="2000.0" step="1"
                    aria-label="Potenza del riscaldatore in Watt"
@@ -968,57 +985,46 @@
         </div>
         
         <div class="input-group">
-            <label for="ht_room_temp">Room Temperature (°C)</label>
-            <input type="number" id="ht_room_temp" value="20.0" step="0.1"
-                   aria-label="Temperatura ambiente in gradi Celsius"
-                   aria-describedby="ht_room_temp_desc"
-                   aria-required="true"
-                   min="-273" max="100">
-            <span id="ht_room_temp_desc" class="sr-only">Inserisci la temperatura ambiente in gradi Celsius</span>
+            <label>
+                <input type="checkbox" id="ht_include_dissipation" onchange="toggleDissipationFields('ht')">
+                Include dissipation loss
+            </label>
         </div>
         
-        <div class="input-group">
-            <label for="ht_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
-            <input type="number" id="ht_heat_transfer_coeff" value="15.0" step="0.1"
-                   aria-label="Coefficiente di trasferimento termico in Watt per metro quadro per grado Celsius"
-                   aria-describedby="ht_heat_transfer_coeff_desc"
-                   aria-required="true"
-                   min="0.1" max="1000">
-            <span id="ht_heat_transfer_coeff_desc" class="sr-only">Inserisci il coefficiente di trasferimento termico</span>
-        </div>
-        
-        <div class="input-group">
-            <label for="ht_surface_area">External Surface Area</label>
-            <div class="input-with-unit">
-                <input type="number" id="ht_surface_area" value="0.5" step="0.01"
-                       aria-label="Area della superficie esterna"
-                       aria-describedby="ht_surface_area_desc"
-                       aria-required="true"
-                       min="0.0001" max="1000">
-                <select id="ht_surface_area_unit" onchange="convertSurfaceArea('ht')"
-                        aria-label="Unità di misura per l'area della superficie">
-                    <option value="m2">m²</option>
-                    <option value="cm2">cm²</option>
-                </select>
+        <div id="ht_dissipation_group" style="display: none;">
+            <div class="input-group">
+                <label for="ht_room_temp">Ambient Temperature (°C)</label>
+                <input type="number" id="ht_room_temp" value="20.0" step="0.1"
+                       aria-label="Temperatura ambiente in gradi Celsius"
+                       aria-describedby="ht_room_temp_desc"
+                       min="-273" max="100">
+                <span id="ht_room_temp_desc" class="sr-only">Inserisci la temperatura ambiente in gradi Celsius</span>
             </div>
-            <span id="ht_surface_area_desc" class="sr-only">Inserisci l'area della superficie esterna</span>
-        </div>
-        
-        <div class="input-group">
-            <label for="ht_stainless_steel_volume">Stainless Steel Volume</label>
-            <div class="input-with-unit">
-                <input type="number" id="ht_stainless_steel_volume" value="0.001" step="0.0001"
-                       aria-label="Volume dell'acciaio inox"
-                       aria-describedby="ht_stainless_steel_volume_desc"
-                       aria-required="true"
-                       min="0.000001" max="10">
-                <select id="ht_stainless_steel_volume_unit" onchange="convertVolume('ht')"
-                        aria-label="Unità di misura per il volume dell'acciaio">
-                    <option value="m3">m³</option>
-                    <option value="cm3">cm³</option>
-                </select>
+            
+            <div class="input-group">
+                <label for="ht_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
+                <input type="number" id="ht_heat_transfer_coeff" value="15.0" step="0.1"
+                       aria-label="Coefficiente di trasferimento termico in Watt per metro quadro per grado Celsius"
+                       aria-describedby="ht_heat_transfer_coeff_desc"
+                       min="0.1" max="1000">
+                <span id="ht_heat_transfer_coeff_desc" class="sr-only">Inserisci il coefficiente di trasferimento termico</span>
             </div>
-            <span id="ht_stainless_steel_volume_desc" class="sr-only">Inserisci il volume dell'acciaio inox</span>
+            
+            <div class="input-group">
+                <label for="ht_surface_area">External Surface Area</label>
+                <div class="input-with-unit">
+                    <input type="number" id="ht_surface_area" value="0.5" step="0.01"
+                           aria-label="Area della superficie esterna"
+                           aria-describedby="ht_surface_area_desc"
+                           min="0.0000000001" max="1000000000">
+                    <select id="ht_surface_area_unit" onchange="convertSurfaceArea('ht')"
+                            aria-label="Unità di misura per l'area della superficie">
+                        <option value="m2">m²</option>
+                        <option value="cm2">cm²</option>
+                    </select>
+                </div>
+                <span id="ht_surface_area_desc" class="sr-only">Inserisci l'area della superficie esterna</span>
+            </div>
         </div>
         
         <div class="action-buttons" role="group" aria-label="Azioni parametri">
@@ -1071,39 +1077,50 @@
         </div>
         
         <div class="input-group">
-            <label for="pc_time_required">Time Required (seconds)</label>
-            <input type="number" id="pc_time_required" value="300.0" step="1">
-        </div>
-        
-        <div class="input-group">
-            <label for="pc_room_temp">Room Temperature (°C)</label>
-            <input type="number" id="pc_room_temp" value="20.0" step="0.1">
-        </div>
-        
-        <div class="input-group">
-            <label for="pc_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
-            <input type="number" id="pc_heat_transfer_coeff" value="15.0" step="0.1">
-        </div>
-        
-        <div class="input-group">
-            <label for="pc_surface_area">External Surface Area</label>
+            <label for="pc_stainless_steel_volume">Stainless Steel Volume</label>
             <div class="input-with-unit">
-                <input type="number" id="pc_surface_area" value="0.5" step="0.01">
-                <select id="pc_surface_area_unit" onchange="convertSurfaceArea('pc')">
-                    <option value="m2">m²</option>
-                    <option value="cm2">cm²</option>
+                <input type="number" id="pc_stainless_steel_volume" value="0.001" step="0.0001"
+                       min="0.0000000001" max="1000000000">
+                <select id="pc_stainless_steel_volume_unit" onchange="convertVolume('pc')">
+                    <option value="m3">m³</option>
+                    <option value="cm3">cm³</option>
                 </select>
             </div>
         </div>
         
         <div class="input-group">
-            <label for="pc_stainless_steel_volume">Stainless Steel Volume</label>
-            <div class="input-with-unit">
-                <input type="number" id="pc_stainless_steel_volume" value="0.001" step="0.0001">
-                <select id="pc_stainless_steel_volume_unit" onchange="convertVolume('pc')">
-                    <option value="m3">m³</option>
-                    <option value="cm3">cm³</option>
-                </select>
+            <label for="pc_time_required">Time Required (seconds)</label>
+            <input type="number" id="pc_time_required" value="300.0" step="1">
+        </div>
+        
+        <div class="input-group">
+            <label>
+                <input type="checkbox" id="pc_include_dissipation" onchange="toggleDissipationFields('pc')">
+                Include dissipation loss
+            </label>
+        </div>
+        
+        <div id="pc_dissipation_group" style="display: none;">
+            <div class="input-group">
+                <label for="pc_room_temp">Ambient Temperature (°C)</label>
+                <input type="number" id="pc_room_temp" value="20.0" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="pc_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
+                <input type="number" id="pc_heat_transfer_coeff" value="15.0" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="pc_surface_area">External Surface Area</label>
+                <div class="input-with-unit">
+                    <input type="number" id="pc_surface_area" value="0.5" step="0.01"
+                           min="0.0000000001" max="1000000000">
+                    <select id="pc_surface_area_unit" onchange="convertSurfaceArea('pc')">
+                        <option value="m2">m²</option>
+                        <option value="cm2">cm²</option>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -1166,34 +1183,45 @@
         </div>
         
         <div class="input-group">
-            <label for="ct_room_temp">Room Temperature (°C)</label>
-            <input type="number" id="ct_room_temp" value="20.0" step="0.1">
-        </div>
-        
-        <div class="input-group">
-            <label for="ct_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
-            <input type="number" id="ct_heat_transfer_coeff" value="15.0" step="0.1">
-        </div>
-        
-        <div class="input-group">
-            <label for="ct_surface_area">External Surface Area</label>
+            <label for="ct_stainless_steel_volume">Stainless Steel Volume</label>
             <div class="input-with-unit">
-                <input type="number" id="ct_surface_area" value="0.5" step="0.01">
-                <select id="ct_surface_area_unit" onchange="convertSurfaceArea('ct')">
-                    <option value="m2">m²</option>
-                    <option value="cm2">cm²</option>
+                <input type="number" id="ct_stainless_steel_volume" value="0.001" step="0.0001"
+                       min="0.0000000001" max="1000000000">
+                <select id="ct_stainless_steel_volume_unit" onchange="convertVolume('ct')">
+                    <option value="m3">m³</option>
+                    <option value="cm3">cm³</option>
                 </select>
             </div>
         </div>
         
         <div class="input-group">
-            <label for="ct_stainless_steel_volume">Stainless Steel Volume</label>
-            <div class="input-with-unit">
-                <input type="number" id="ct_stainless_steel_volume" value="0.001" step="0.0001">
-                <select id="ct_stainless_steel_volume_unit" onchange="convertVolume('ct')">
-                    <option value="m3">m³</option>
-                    <option value="cm3">cm³</option>
-                </select>
+            <label>
+                <input type="checkbox" id="ct_include_dissipation" onchange="toggleDissipationFields('ct')">
+                Include dissipation loss
+            </label>
+        </div>
+        
+        <div id="ct_dissipation_group" style="display: none;">
+            <div class="input-group">
+                <label for="ct_room_temp">Ambient Temperature (°C)</label>
+                <input type="number" id="ct_room_temp" value="20.0" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="ct_heat_transfer_coeff">Heat Transfer Coefficient (W/m²·°C)</label>
+                <input type="number" id="ct_heat_transfer_coeff" value="15.0" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="ct_surface_area">External Surface Area</label>
+                <div class="input-with-unit">
+                    <input type="number" id="ct_surface_area" value="0.5" step="0.01"
+                           min="0.0000000001" max="1000000000">
+                    <select id="ct_surface_area_unit" onchange="convertSurfaceArea('ct')">
+                        <option value="m2">m²</option>
+                        <option value="cm2">cm²</option>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -1689,6 +1717,14 @@
             };
             const config = colors[type] || colors.success;
             
+            // Convert hex to rgba with 60% opacity (0.4 alpha)
+            function hexToRgba(hex, alpha) {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+            
             notification.className = 'notification';
             notification.setAttribute('role', 'alert');
             notification.setAttribute('aria-live', 'polite');
@@ -1696,7 +1732,7 @@
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: ${config.bg};
+                background: ${hexToRgba(config.bg, 0.4)};
                 color: white;
                 padding: 15px 20px;
                 border-radius: 10px;
@@ -1708,6 +1744,7 @@
                 gap: 10px;
                 animation: slideIn 0.3s ease-out;
                 max-width: 400px;
+                backdrop-filter: blur(10px);
             `;
             notification.innerHTML = `
                 <span style="font-size: 1.2em;">${config.icon}</span>
@@ -1879,17 +1916,25 @@
                 if (resultDiv) resultDiv.textContent = 'Calcolo in corso...';
                 if (secondsDiv) secondsDiv.textContent = '...';
                 
+                // Check if dissipation loss is included
+                const includeDissipation = document.getElementById('ht_include_dissipation').checked;
+                
                 // Comprehensive validation
-                if (!validateCalculatorInputs('ht_', {
+                const validations = {
                     initial_temp: { min: -273, max: 1000, required: true, customMessage: 'La temperatura iniziale deve essere tra -273°C e 1000°C' },
                     target_temp: { min: -273, max: 1000, required: true, customMessage: 'La temperatura target deve essere tra -273°C e 1000°C e maggiore della temperatura iniziale' },
                     water_volume: { min: 0.001, max: 10000, required: true, customMessage: 'Il volume dell\'acqua deve essere tra 0.001L e 10000L' },
                     heater_power: { min: 1, max: 100000, required: true, customMessage: 'La potenza del riscaldatore deve essere tra 1W e 100000W' },
-                    room_temp: { min: -273, max: 100, required: true },
-                    heat_transfer_coeff: { min: 0.1, max: 1000, required: true },
-                    surface_area: { min: 0.0001, max: 1000, required: true },
-                    stainless_steel_volume: { min: 0.000001, max: 10, required: true }
-                })) {
+                    stainless_steel_volume: { min: 0.0000000001, max: 1000000000, required: true }
+                };
+                
+                if (includeDissipation) {
+                    validations.room_temp = { min: -273, max: 100, required: true };
+                    validations.heat_transfer_coeff = { min: 0.1, max: 1000, required: true };
+                    validations.surface_area = { min: 0.0000000001, max: 1000000000, required: true };
+                }
+                
+                if (!validateCalculatorInputs('ht_', validations)) {
                     if (resultDiv) resultDiv.textContent = '-';
                     if (secondsDiv) secondsDiv.textContent = '-';
                     return;
@@ -1909,8 +1954,14 @@
                 const params = getCalculatorParams('ht_');
                 
                 // Override with normalized values for surface area and volume
-                params.ht_surface_area = getNormalizedSurfaceArea('ht');
+                params.ht_surface_area = includeDissipation ? getNormalizedSurfaceArea('ht') : 0;
                 params.ht_stainless_steel_volume = getNormalizedVolume('ht');
+                
+                // If dissipation not included, set default values
+                if (!includeDissipation) {
+                    params.ht_heat_transfer_coeff = 0;
+                    params.ht_room_temp = 0;
+                }
                 
                 // Constants from Python code
                 const WATER_SPECIFIC_HEAT = 4186;  // J/(kg·°C)
@@ -1928,8 +1979,10 @@
                 let total_time = 0;
                 
                 while (current_temp < params.ht_target_temp && total_time < 3600) {  // limit to 1 hour
-                    // Calculate heat loss using heat transfer coefficient and surface area
-                    const heat_loss = params.ht_heat_transfer_coeff * params.ht_surface_area * (current_temp - params.ht_room_temp);
+                    // Calculate heat loss using heat transfer coefficient and surface area (0 if dissipation not included)
+                    const heat_loss = includeDissipation 
+                        ? params.ht_heat_transfer_coeff * params.ht_surface_area * (current_temp - params.ht_room_temp)
+                        : 0;
                     
                     // Calculate energy input from heater for this time step
                     const energy_input = params.ht_heater_power * time_step;  // Joules
@@ -1974,17 +2027,25 @@
                     if (div) div.textContent = 'Calcolo...';
                 });
                 
+                // Check if dissipation loss is included
+                const includeDissipation = document.getElementById('pc_include_dissipation').checked;
+                
                 // Comprehensive validation
-                if (!validateCalculatorInputs('pc_', {
+                const validations = {
                     initial_temp: { min: -273, max: 1000, required: true },
                     target_temp: { min: -273, max: 1000, required: true },
                     water_volume: { min: 0.001, max: 10000, required: true },
                     time_required: { min: 1, max: 86400, required: true, customMessage: 'Il tempo richiesto deve essere tra 1 secondo e 24 ore (86400 secondi)' },
-                    room_temp: { min: -273, max: 100, required: true },
-                    heat_transfer_coeff: { min: 0.1, max: 1000, required: true },
-                    surface_area: { min: 0.0001, max: 1000, required: true },
-                    stainless_steel_volume: { min: 0.000001, max: 10, required: true }
-                })) {
+                    stainless_steel_volume: { min: 0.0000000001, max: 1000000000, required: true }
+                };
+                
+                if (includeDissipation) {
+                    validations.room_temp = { min: -273, max: 100, required: true };
+                    validations.heat_transfer_coeff = { min: 0.1, max: 1000, required: true };
+                    validations.surface_area = { min: 0.0000000001, max: 1000000000, required: true };
+                }
+                
+                if (!validateCalculatorInputs('pc_', validations)) {
                     resultDivs.forEach(id => {
                         const div = document.getElementById(id);
                         if (div) div.textContent = '-';
@@ -2008,8 +2069,14 @@
                 const params = getCalculatorParams('pc_');
                 
                 // Override with normalized values for surface area and volume
-                params.pc_surface_area = getNormalizedSurfaceArea('pc');
+                params.pc_surface_area = includeDissipation ? getNormalizedSurfaceArea('pc') : 0;
                 params.pc_stainless_steel_volume = getNormalizedVolume('pc');
+                
+                // If dissipation not included, set default values
+                if (!includeDissipation) {
+                    params.pc_heat_transfer_coeff = 0;
+                    params.pc_room_temp = 0;
+                }
                 
                 // Constants from Python code
                 const WATER_SPECIFIC_HEAT = 4186;  // J/(kg·°C)
@@ -2026,7 +2093,9 @@
                 
                 const total_energy_to_water = (water_mass * WATER_SPECIFIC_HEAT) * (params.pc_target_temp - params.pc_initial_temp);
                 const total_energy_to_steel = (stainless_steel_mass * STAINLESS_STEEL_SPECIFIC_HEAT) * (params.pc_target_temp - params.pc_initial_temp);
-                const first_estimate_total_energy_lost = params.pc_time_required * params.pc_heat_transfer_coeff * params.pc_surface_area * ((params.pc_target_temp + params.pc_initial_temp)/2 - params.pc_room_temp);
+                const first_estimate_total_energy_lost = includeDissipation 
+                    ? params.pc_time_required * params.pc_heat_transfer_coeff * params.pc_surface_area * ((params.pc_target_temp + params.pc_initial_temp)/2 - params.pc_room_temp)
+                    : 0;
                 const first_estimate_total_energy = total_energy_to_water + total_energy_to_steel + first_estimate_total_energy_lost;
                 let first_estimate_total_power = first_estimate_total_energy / params.pc_time_required;
                 
@@ -2039,8 +2108,10 @@
                     let simulation_time = 0;
                     
                     while (simulation_time < params.pc_time_required && current_temp < params.pc_target_temp) {
-                        // Calculate heat loss at current temperature
-                        const heat_loss = params.pc_heat_transfer_coeff * params.pc_surface_area * (current_temp - params.pc_room_temp);
+                        // Calculate heat loss at current temperature (0 if dissipation not included)
+                        const heat_loss = includeDissipation 
+                            ? params.pc_heat_transfer_coeff * params.pc_surface_area * (current_temp - params.pc_room_temp)
+                            : 0;
                         total_energy_lost += heat_loss * time_step;
                         
                         // Calculate temperature change from net energy
@@ -2088,16 +2159,24 @@
                 if (resultDiv) resultDiv.textContent = 'Calcolo in corso...';
                 if (secondsDiv) secondsDiv.textContent = '...';
                 
+                // Check if dissipation loss is included
+                const includeDissipation = document.getElementById('ct_include_dissipation').checked;
+                
                 // Comprehensive validation
-                if (!validateCalculatorInputs('ct_', {
+                const validations = {
                     initial_temp: { min: -273, max: 1000, required: true },
                     final_temp: { min: -273, max: 1000, required: true },
                     water_volume: { min: 0.001, max: 10000, required: true },
-                    room_temp: { min: -273, max: 100, required: true },
-                    heat_transfer_coeff: { min: 0.1, max: 1000, required: true },
-                    surface_area: { min: 0.0001, max: 1000, required: true },
-                    stainless_steel_volume: { min: 0.000001, max: 10, required: true }
-                })) {
+                    stainless_steel_volume: { min: 0.0000000001, max: 1000000000, required: true }
+                };
+                
+                if (includeDissipation) {
+                    validations.room_temp = { min: -273, max: 100, required: true };
+                    validations.heat_transfer_coeff = { min: 0.1, max: 1000, required: true };
+                    validations.surface_area = { min: 0.0000000001, max: 1000000000, required: true };
+                }
+                
+                if (!validateCalculatorInputs('ct_', validations)) {
                     if (resultDiv) resultDiv.textContent = '-';
                     if (secondsDiv) secondsDiv.textContent = '-';
                     return;
@@ -2106,7 +2185,6 @@
                 // Additional logical validation
                 const initialTemp = parseFloat(document.getElementById('ct_initial_temp').value);
                 const finalTemp = parseFloat(document.getElementById('ct_final_temp').value);
-                const roomTemp = parseFloat(document.getElementById('ct_room_temp').value);
                 
                 if (finalTemp >= initialTemp) {
                     showNotification('La temperatura finale deve essere minore della temperatura iniziale', 'error');
@@ -2116,19 +2194,28 @@
                     return;
                 }
                 
-                if (finalTemp < roomTemp) {
-                    showNotification('La temperatura finale non può essere minore della temperatura ambiente', 'error');
-                    document.getElementById('ct_final_temp').focus();
-                    if (resultDiv) resultDiv.textContent = '-';
-                    if (secondsDiv) secondsDiv.textContent = '-';
-                    return;
+                if (includeDissipation) {
+                    const roomTemp = parseFloat(document.getElementById('ct_room_temp').value);
+                    if (finalTemp < roomTemp) {
+                        showNotification('La temperatura finale non può essere minore della temperatura ambiente', 'error');
+                        document.getElementById('ct_final_temp').focus();
+                        if (resultDiv) resultDiv.textContent = '-';
+                        if (secondsDiv) secondsDiv.textContent = '-';
+                        return;
+                    }
                 }
                 
                 const params = getCalculatorParams('ct_');
                 
                 // Override with normalized values for surface area and volume
-                params.ct_surface_area = getNormalizedSurfaceArea('ct');
+                params.ct_surface_area = includeDissipation ? getNormalizedSurfaceArea('ct') : 0;
                 params.ct_stainless_steel_volume = getNormalizedVolume('ct');
+                
+                // If dissipation not included, set default values
+                if (!includeDissipation) {
+                    params.ct_heat_transfer_coeff = 0;
+                    params.ct_room_temp = 0;
+                }
                 
                 // Constants from Python code
                 const WATER_SPECIFIC_HEAT = 4186;  // J/(kg·°C)
@@ -2149,8 +2236,10 @@
                 let total_energy_lost_steel = 0;  // Track energy lost from stainless steel
                 
                 while (current_temp > params.ct_final_temp && total_time < 10800) {  // limit to 3 hours
-                    // Calculate heat loss using heat transfer coefficient and surface area
-                    const heat_loss = params.ct_heat_transfer_coeff * params.ct_surface_area * (current_temp - params.ct_room_temp);
+                    // Calculate heat loss using heat transfer coefficient and surface area (0 if dissipation not included)
+                    const heat_loss = includeDissipation 
+                        ? params.ct_heat_transfer_coeff * params.ct_surface_area * (current_temp - params.ct_room_temp)
+                        : 0;
                     
                     // Calculate energy lost to environment in this time step
                     const energy_lost = heat_loss * time_step;  // Joules
@@ -2841,6 +2930,20 @@
             // Allow all touch movements for scrolling
         }, { passive: true });
 
+        // Toggle dissipation loss fields
+        function toggleDissipationFields(prefix) {
+            const checkbox = document.getElementById(prefix + '_include_dissipation');
+            const group = document.getElementById(prefix + '_dissipation_group');
+            
+            if (checkbox && group) {
+                if (checkbox.checked) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            }
+        }
+        
         // Temperature Probe Calculator Functions
         function toggleInputFields() {
             const inputType = document.getElementById('tp_input_type').value;
